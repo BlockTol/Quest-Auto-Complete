@@ -16,7 +16,7 @@
  * - Original script concept from the Discord community
  * - Enhanced and converted to Vencord plugin by BlockTol
  *
- * ⚠️ Disclaimer:
+ * Disclaimer:
  * This plugin is for educational purposes only.
  * Use at your own risk. The author is not responsible for any
  * consequences including but not limited to account suspension.
@@ -109,7 +109,7 @@ const settings = definePluginSettings({
     },
     checkUpdates: {
         type: OptionType.BOOLEAN,
-        description: "Check for plugin updates automatically",
+        description: "Check for plugin updates automatically on Discord startup",
         default: true,
         restartNeeded: false
     },
@@ -171,138 +171,144 @@ function compareVersions(v1: string, v2: string): number {
 }
 
 function showUpdateNotification(update: UpdateInfo) {
-    const modal = document.createElement("div");
-    modal.style.cssText = `
+    const notification = document.createElement("div");
+    notification.style.cssText = `
         position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.85);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 10000;
-        animation: fadeIn 0.2s ease;
-    `;
-
-    const content = document.createElement("div");
-    content.style.cssText = `
-        background: var(--background-primary);
+        bottom: 20px;
+        left: 20px;
+        background: var(--background-floating);
         border-radius: 8px;
-        padding: 24px;
-        max-width: 500px;
-        width: 90%;
+        padding: 16px;
+        width: 360px;
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-        animation: slideUp 0.3s ease;
+        z-index: 10000;
+        animation: slideInLeft 0.3s ease;
+        border: 1px solid var(--background-modifier-accent);
     `;
 
-    content.innerHTML = `
-        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="#5865F2">
+    notification.innerHTML = `
+        <div style="display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="#5865F2">
                 <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
             </svg>
-            <div>
-                <h2 style="margin: 0; color: var(--header-primary); font-size: 20px; font-weight: 600;">
-                    ${update.critical ? "Critical Update Available" : "🎉 Update Available"}
-                </h2>
-                <p style="margin: 4px 0 0 0; color: var(--text-muted); font-size: 14px;">
+            <div style="flex: 1;">
+                <h3 style="margin: 0; color: var(--header-primary); font-size: 16px; font-weight: 600;">
+                    ${update.critical ? "Critical Update" : "Update Available"}
+                </h3>
+                <p style="margin: 4px 0 0 0; color: var(--text-muted); font-size: 12px;">
                     v${PLUGIN_VERSION} → v${update.version}
                 </p>
             </div>
+            <button id="close-update-notif" style="
+                background: none;
+                border: none;
+                color: var(--interactive-normal);
+                cursor: pointer;
+                padding: 0;
+                width: 20px;
+                height: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            ">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18.4 4L12 10.4L5.6 4L4 5.6L10.4 12L4 18.4L5.6 20L12 13.6L18.4 20L20 18.4L13.6 12L20 5.6L18.4 4Z"/>
+                </svg>
+            </button>
         </div>
 
-        <div style="background: var(--background-secondary); padding: 16px; border-radius: 4px; margin-bottom: 16px;">
-            <h3 style="margin: 0 0 8px 0; color: var(--header-secondary); font-size: 14px; font-weight: 600;">
+        <div style="background: var(--background-secondary); padding: 12px; border-radius: 4px; margin-bottom: 12px;">
+            <p style="margin: 0 0 6px 0; color: var(--header-secondary); font-size: 12px; font-weight: 600;">
                 What's New:
-            </h3>
-            <ul style="margin: 0; padding-left: 20px; color: var(--text-normal); font-size: 13px;">
-                ${update.changelog.map(item => `<li style="margin: 4px 0;">${item}</li>`).join('')}
+            </p>
+            <ul style="margin: 0; padding-left: 16px; color: var(--text-normal); font-size: 12px;">
+                ${update.changelog.map(item => `<li style="margin: 2px 0;">${item}</li>`).join('')}
             </ul>
         </div>
 
         ${update.critical ? `
-            <div style="background: #faa61a20; border: 1px solid #faa61a; padding: 12px; border-radius: 4px; margin-bottom: 16px;">
-                <p style="margin: 0; color: #faa61a; font-size: 13px; font-weight: 500;">
-                    This is a critical update with important bug fixes or security improvements.
+            <div style="background: #faa61a20; border: 1px solid #faa61a; padding: 8px; border-radius: 4px; margin-bottom: 12px;">
+                <p style="margin: 0; color: #faa61a; font-size: 11px; font-weight: 500;">
+                    Critical update with important fixes
                 </p>
             </div>
         ` : ''}
 
-        <div style="display: flex; gap: 8px; justify-content: flex-end;">
-            <button id="ignore-btn" style="
-                padding: 10px 20px;
+        <div style="display: flex; gap: 8px;">
+            <button id="ignore-update-btn" style="
+                flex: 1;
+                padding: 8px;
                 background: var(--background-secondary);
                 color: var(--text-normal);
                 border: none;
                 border-radius: 4px;
-                font-size: 14px;
+                font-size: 13px;
                 font-weight: 500;
                 cursor: pointer;
-                transition: all 0.2s;
             ">
-                ${update.critical ? "Remind Later" : "Ignore"}
+                ${update.critical ? "Later" : "Ignore"}
             </button>
-            <button id="update-btn" style="
-                padding: 10px 20px;
+            <button id="download-update-btn" style="
+                flex: 1;
+                padding: 8px;
                 background: var(--brand-experiment);
                 color: white;
                 border: none;
                 border-radius: 4px;
-                font-size: 14px;
+                font-size: 13px;
                 font-weight: 500;
                 cursor: pointer;
-                transition: all 0.2s;
             ">
-                Download Update
+                Download
             </button>
         </div>
     `;
 
-    modal.appendChild(content);
-    document.body.appendChild(modal);
-
-    if (!document.getElementById("update-modal-styles")) {
+    if (!document.getElementById("update-notif-styles")) {
         const style = document.createElement("style");
-        style.id = "update-modal-styles";
+        style.id = "update-notif-styles";
         style.textContent = `
-            @keyframes fadeIn {
-                from { opacity: 0; }
-                to { opacity: 1; }
-            }
-            @keyframes slideUp {
-                from { transform: translateY(20px); opacity: 0; }
-                to { transform: translateY(0); opacity: 1; }
+            @keyframes slideInLeft {
+                from { transform: translateX(-100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
             }
         `;
         document.head.appendChild(style);
     }
 
-    const updateBtn = content.querySelector("#update-btn") as HTMLButtonElement;
-    const ignoreBtn = content.querySelector("#ignore-btn") as HTMLButtonElement;
+    document.body.appendChild(notification);
 
-    updateBtn.onmouseover = () => updateBtn.style.background = "#4752c4";
-    updateBtn.onmouseout = () => updateBtn.style.background = "var(--brand-experiment)";
+    const closeBtn = notification.querySelector("#close-update-notif") as HTMLButtonElement;
+    const ignoreBtn = notification.querySelector("#ignore-update-btn") as HTMLButtonElement;
+    const downloadBtn = notification.querySelector("#download-update-btn") as HTMLButtonElement;
+
+    closeBtn.onmouseover = () => closeBtn.style.color = "var(--interactive-hover)";
+    closeBtn.onmouseout = () => closeBtn.style.color = "var(--interactive-normal)";
+    closeBtn.onclick = () => notification.remove();
 
     ignoreBtn.onmouseover = () => ignoreBtn.style.background = "var(--background-tertiary)";
     ignoreBtn.onmouseout = () => ignoreBtn.style.background = "var(--background-secondary)";
-
-    updateBtn.onclick = () => {
-        window.open(update.downloadUrl, "_blank");
-        modal.remove();
-        notify("Opening download page...");
-    };
-
     ignoreBtn.onclick = () => {
         if (!update.critical) {
             settings.store.ignoredVersion = update.version;
         }
-        modal.remove();
+        notification.remove();
     };
 
-    modal.onclick = (e) => {
-        if (e.target === modal) modal.remove();
+    downloadBtn.onmouseover = () => downloadBtn.style.background = "#4752c4";
+    downloadBtn.onmouseout = () => downloadBtn.style.background = "var(--brand-experiment)";
+    downloadBtn.onclick = () => {
+        window.open(update.downloadUrl, "_blank");
+        notification.remove();
+        showToastNotification("Opening download page...", "info");
     };
+
+    setTimeout(() => {
+        if (document.body.contains(notification)) {
+            notification.style.animation = "slideOutLeft 0.3s ease";
+            setTimeout(() => notification.remove(), 300);
+        }
+    }, 15000);
 }
 
 async function checkForUpdates(showNotification = true): Promise<UpdateInfo | null> {
@@ -329,7 +335,7 @@ async function checkForUpdates(showNotification = true): Promise<UpdateInfo | nu
                 return updateInfo;
             }
         } else if (showNotification) {
-            notify("You're using the latest version!");
+            showToastNotification("You're using the latest version!", "success");
         }
 
         settings.store.lastUpdateCheck = Date.now().toString();
@@ -371,29 +377,31 @@ function createProgressBar() {
                 50% { background-position: 100% 50%; }
                 100% { background-position: 0% 50%; }
             }
+            @keyframes slideOutLeft {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(-100%); opacity: 0; }
+            }
         `;
         document.head.appendChild(style);
     }
 
     document.body.appendChild(progressBar);
-    
-    // Force reflow to ensure animation works
     void progressBar.offsetWidth;
-    
+
     return progressBar;
 }
 
 function updateProgressBar(percent: number) {
     if (!settings.store.showProgressBar) return;
-    
+
     if (!progressBar) {
         createProgressBar();
     }
-    
+
     if (progressBar) {
         const clampedPercent = Math.min(100, Math.max(0, percent));
         progressBar.style.width = `${clampedPercent}%`;
-        
+
         if (clampedPercent >= 100) {
             setTimeout(() => {
                 if (progressBar) {
@@ -420,127 +428,57 @@ function removeProgressBar() {
     }
 }
 
-// ==================== Quest Page Button ====================
-function addQuestPageButton() {
-    if (questPageButton) {
-        questPageButton.remove();
-        questPageButton = null;
-    }
+// ==================== Toast Notifications ====================
+function showToastNotification(message: string, type: "success" | "info" | "warning" | "error" = "success") {
+    const toast = document.createElement("div");
 
-    const waitForQuestPage = () => {
-        const toolbar = document.querySelector('[class*="toolbar"]');
-
-        if (!toolbar || !location.href.includes('/quests')) return false;
-
-        try {
-            questPageButton = document.createElement("div");
-            questPageButton.className = "iconWrapper_aebc74 clickable_aebc74";
-            questPageButton.setAttribute("role", "button");
-            questPageButton.setAttribute("aria-label", "Quest Settings");
-            questPageButton.setAttribute("tabindex", "0");
-
-            questPageButton.innerHTML = `
-                <svg aria-hidden="true" role="img" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                    <path fill="currentColor" fill-rule="evenodd" d="M10.56 1.1c-.46.05-.73.86-.55 1.3l.27.87c.2.67.04 1.39-.41 1.82-.39.39-.9.58-1.4.52-.32-.04-.56-.2-.63-.5l-.32-.88c-.18-.45-.77-.64-1.14-.37-1.3.94-2.33 2.18-2.99 3.6-.13.28-.11.67.07.96l.52.8c.39.6.33 1.41-.15 1.95-.39.44-.96.63-1.48.52-.27-.06-.47-.26-.52-.52l-.32-.88c-.2-.47-.84-.58-1.22-.23-.9 1.23-1.48 2.69-1.65 4.25-.03.3.12.63.41.82l.87.56c.58.38.87 1.1.75 1.78-.1.54-.47.97-.96 1.14-.26.09-.51.08-.7-.03l-.86-.49c-.45-.24-.98.07-1.05.57-.1 1.6.15 3.2.75 4.67.12.3.45.5.79.5h.98c.67 0 1.28.46 1.5 1.08.17.48.11 1-.19 1.39-.15.2-.38.32-.66.32h-.98c-.47 0-.85.46-.77.93.46 1.56 1.24 2.97 2.25 4.16.2.24.6.31.9.15l.86-.47c.59-.32 1.33-.18 1.82.33.39.41.54.99.41 1.5-.07.27-.25.47-.51.54l-.88.27c-.45.14-.67.69-.43 1.08 1 1.26 2.27 2.31 3.73 3.03.3.15.68.09.92-.16l.69-.7c.47-.48 1.18-.63 1.8-.39.49.19.85.61.97 1.11.06.27.03.52-.11.7l-.48.86c-.25.44.02.98.53 1.08 1.6.31 3.26.3 4.86-.03.3-.06.56-.3.65-.6l.3-.92c.21-.66.82-1.14 1.48-1.17.52-.03 1.02.2 1.35.6.17.2.25.45.23.7l-.03.98c-.02.47.39.86.86.82 1.57-.13 3.08-.6 4.46-1.34.29-.16.45-.5.4-.83l-.17-.97c-.15-.66.1-1.36.62-1.73.42-.3.95-.38 1.42-.23.25.08.44.25.54.49l.44.89c.22.45.81.61 1.18.31 1.25-.99 2.27-2.25 2.97-3.67.15-.3.08-.67-.16-.92l-.7-.72c-.46-.48-.59-1.2-.32-1.8.21-.49.65-.84 1.16-.94.26-.05.52 0 .7.15l.87.57c.44.28.99-.02 1.1-.52.35-1.58.35-3.23 0-4.82-.07-.3-.33-.54-.64-.6l-.93-.2c-.66-.14-1.18-.7-1.27-1.36-.07-.52.1-1.04.47-1.4.2-.2.45-.3.72-.31l.98-.03c.47-.02.84-.44.78-.9-.18-1.57-.69-3.07-1.47-4.42-.16-.28-.5-.43-.82-.37l-.96.2c-.65.15-1.34-.12-1.7-.66-.3-.43-.35-.98-.18-1.44.09-.25.27-.43.52-.52l.9-.35c.45-.18.63-.77.35-1.14-1.01-1.24-2.29-2.24-3.75-2.9-.3-.14-.67-.05-.92.22l-.7.76c-.46.5-1.17.68-1.8.44-.49-.18-.86-.6-1-1.1-.06-.25-.04-.51.09-.7l.47-.87c.25-.45-.02-.99-.52-1.1-1.6-.33-3.26-.34-4.87-.05-.3.06-.55.3-.64.6l-.3.92c-.22.65-.83 1.13-1.49 1.16-.52.02-1.02-.21-1.35-.61-.17-.21-.25-.46-.22-.71l.03-.98c.02-.47-.4-.86-.87-.81-1.57.15-3.08.64-4.45 1.4-.29.17-.44.51-.38.84l.17.97c.15.66-.11 1.35-.63 1.72-.42.3-.95.37-1.42.21-.25-.08-.44-.25-.54-.5l-.44-.88c-.22-.45-.81-.6-1.18-.3-1.24 1-2.25 2.26-2.94 3.68Z" clip-rule="evenodd"></path>
-                    <path fill="currentColor" d="M18.91 11.35c-.19-.52-.76-.79-1.26-.6a3 3 0 1 1-1.77-1.76c.52-.2.79-.77.6-1.26v-.01a1 1 0 0 0-1.35-.44l-.06.03a5 5 0 1 0 2.93 2.94l.03-.06c.2-.52-.02-1.1-.54-1.29l.42.45Z"></path>
-                </svg>
-            `;
-
-            questPageButton.style.cssText = `
-                color: var(--interactive-normal);
-                cursor: pointer;
-            `;
-
-            questPageButton.onmouseover = () => {
-                if (questPageButton) questPageButton.style.color = "var(--interactive-hover)";
-            };
-
-            questPageButton.onmouseout = () => {
-                if (questPageButton) questPageButton.style.color = "var(--interactive-normal)";
-            };
-
-            questPageButton.onclick = (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-
-                const settingsEvent = new KeyboardEvent("keydown", {
-                    key: ",",
-                    code: "Comma",
-                    keyCode: 188,
-                    which: 188,
-                    ctrlKey: true,
-                    bubbles: true,
-                    cancelable: true
-                });
-                document.dispatchEvent(settingsEvent);
-
-                setTimeout(() => {
-                    const searchBox = document.querySelector('input[placeholder*="Search"], input[type="text"]') as HTMLInputElement;
-                    if (searchBox) {
-                        searchBox.focus();
-                        searchBox.value = "QuestAutoComplete";
-                        searchBox.dispatchEvent(new Event("input", { bubbles: true }));
-                        searchBox.dispatchEvent(new Event("change", { bubbles: true }));
-                    }
-                }, 500);
-            };
-
-            toolbar.appendChild(questPageButton);
-            console.log("[QuestAutoComplete] Button added successfully");
-            return true;
-
-        } catch (error) {
-            console.error("[QuestAutoComplete] Failed to add button:", error);
-            return false;
-        }
+    const colors = {
+        success: "#43b581",
+        info: "#5865F2",
+        warning: "#faa61a",
+        error: "#f04747"
     };
 
-    let attempts = 0;
-    const maxAttempts = 30;
-    const intervalId = setInterval(() => {
-        attempts++;
-        if (waitForQuestPage() || attempts >= maxAttempts) {
-            clearInterval(intervalId);
-        }
-    }, 500);
-}
-
-function setupNavigationWatcher() {
-    if (navigationObserver) {
-        navigationObserver.disconnect();
-    }
-
-    const checkUrl = () => {
-        const currentUrl = location.href;
-        if (currentUrl !== lastQuestUrl) {
-            lastQuestUrl = currentUrl;
-            if (currentUrl.includes('/quests')) {
-                setTimeout(() => addQuestPageButton(), 500);
-            } else if (questPageButton) {
-                questPageButton.remove();
-                questPageButton = null;
-            }
-        }
+    const icons = {
+        success: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>',
+        info: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>',
+        warning: '<path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>',
+        error: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>'
     };
 
-    navigationObserver = new MutationObserver(checkUrl);
-    navigationObserver.observe(document.body, {
-        childList: true,
-        subtree: true
-    });
+    toast.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        background: var(--background-floating);
+        border-left: 3px solid ${colors[type]};
+        border-radius: 4px;
+        padding: 12px 16px;
+        min-width: 300px;
+        max-width: 400px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        z-index: 10001;
+        animation: slideInLeft 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    `;
 
-    checkUrl();
-}
+    toast.innerHTML = `
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="${colors[type]}">
+            ${icons[type]}
+        </svg>
+        <span style="color: var(--text-normal); font-size: 14px; flex: 1;">${message}</span>
+    `;
 
-// ==================== Notifications ====================
-function notify(body: string) {
-    if (settings.store.showNotifications) {
-        Toasts.show({
-            message: body,
-            type: Toasts.Type.SUCCESS,
-            id: "quest-autocomplete-" + Date.now()
-        });
-    }
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+        if (document.body.contains(toast)) {
+            toast.style.animation = "slideOutLeft 0.3s ease";
+            setTimeout(() => toast.remove(), 300);
+        }
+    }, 3000);
 }
 
 // ==================== Quest Completion Functions ====================
@@ -559,7 +497,7 @@ async function completeVideoQuest(quest: Quest) {
     let completed = false;
 
     if (settings.store.showProgressBar) {
-        createProgressBar();
+        createProgressBar();ش
         updateProgressBar(0);
     }
 
@@ -598,7 +536,7 @@ async function completeVideoQuest(quest: Quest) {
     }
 
     updateProgressBar(100);
-    notify(`Quest completed: ${quest.config.messages.questName}`);
+    showToastNotification(`Quest completed: ${quest.config.messages.questName}`, "success");
     isProcessing = false;
     currentQuestId = null;
     return true;
@@ -668,7 +606,7 @@ async function completePlayQuest(quest: Quest) {
                 });
                 FluxDispatcher.unsubscribe("QUESTS_SEND_HEARTBEAT_SUCCESS", handleProgress);
 
-                notify(`Quest completed: ${quest.config.messages.questName}`);
+                showToastNotification(`Quest completed: ${quest.config.messages.questName}`, "success");
                 isProcessing = false;
                 currentQuestId = null;
             }
@@ -722,7 +660,7 @@ async function completeStreamQuest(quest: Quest) {
             ApplicationStreamingStore.getStreamerActiveStreamMetadata = realFunc;
             FluxDispatcher.unsubscribe("QUESTS_SEND_HEARTBEAT_SUCCESS", handleProgress);
 
-            notify(`Quest completed: ${quest.config.messages.questName}`);
+            showToastNotification(`Quest completed: ${quest.config.messages.questName}`, "success");
             isProcessing = false;
             currentQuestId = null;
         }
@@ -779,7 +717,7 @@ async function completeActivityQuest(quest: Quest) {
         }
 
         updateProgressBar(100);
-        notify(`Quest completed: ${quest.config.messages.questName}`);
+        showToastNotification(`Quest completed: ${quest.config.messages.questName}`, "success");
         isProcessing = false;
         currentQuestId = null;
         return true;
@@ -809,6 +747,8 @@ async function checkAndStartQuest() {
 
         currentQuestId = activeQuest.id;
         isProcessing = true;
+
+        showToastNotification(`Quest detected: ${activeQuest.config.messages.questName}`, "info");
 
         const taskConfig = activeQuest.config.taskConfig ?? activeQuest.config.taskConfigV2;
         const taskName = ["WATCH_VIDEO", "WATCH_VIDEO_ON_MOBILE", "PLAY_ON_DESKTOP", "STREAM_ON_DESKTOP", "PLAY_ACTIVITY"]
@@ -891,6 +831,10 @@ export default definePlugin({
             if (initializeStores()) {
                 checkAndStartQuest();
                 setupNavigationWatcher();
+
+                if (settings.store.checkUpdates) {
+                    checkForUpdates(true);
+                }
             }
         }, 2000);
     },
