@@ -36,12 +36,11 @@ import { showNotification } from "@api/Notifications";
 const fs = require("fs");
 const path = require("path");
 
-const PLUGIN_VERSION = "1.0.0"; // النسخه الحالية
-const VERSION_URL = "https://raw.githubusercontent.com/<username>/<repo>/main/version.json";
-const PLUGIN_URL   = "https://raw.githubusercontent.com/<username>/<repo>/main/main.js";
-const CHECK_INTERVAL = 6 * 60 * 60 * 1000; // كل 6 ساعات
+const PLUGIN_VERSION = "1.0.0";
+const UPDATE_CHECK_URL = "https://raw.githubusercontent.com/BlockTol/Quest-Auto-Complete/refs/heads/main/version.json";
+const PLUGIN_URL       = "https://raw.githubusercontent.com/BlockTol/Quest-Auto-Complete/refs/heads/main/index.tsx";
+const CHECK_INTERVAL = 6 * 60 * 60 * 1000;
 
-// مسار مجلد البلوقن داخل فينكورد
 const pluginPath = path.join(Vencord.Plugins.folder, "QuestAutoComplete.plugin.js");
 
 async function checkForUpdates() {
@@ -57,7 +56,6 @@ async function checkForUpdates() {
             const newCodeReq = await fetch(PLUGIN_URL);
             const newCode = await newCodeReq.text();
 
-            // استبدال الملف القديم
             fs.writeFileSync(pluginPath, newCode, "utf8");
 
             Vencord.Api.Notifications.sendToast({
@@ -71,10 +69,8 @@ async function checkForUpdates() {
     }
 }
 
-// تشغيل الفحص كل فترة
 setInterval(checkForUpdates, CHECK_INTERVAL);
 
-// فحص مرة عند التشغيل
 checkForUpdates();
 
 // ==================== Types ====================
