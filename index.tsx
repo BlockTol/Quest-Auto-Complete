@@ -9,12 +9,9 @@
  *
  * Created by: BlockTol
  * GitHub: https://github.com/BlockTol
- * Discord: @blocktol
- *
+ * Discord: @dhrtjhjtd
  * Description: Automatically completes Discord quests instantly!
  * Version: 1.0.0
- * License: MIT
- *
  * Credits:
  * - Original script concept from the Discord community
  * - Enhanced and converted to Vencord plugin by BlockTol
@@ -32,46 +29,8 @@ import { findByPropsLazy } from "@webpack";
 import { FluxDispatcher, Toasts } from "@webpack/common";
 import { showNotification } from "@api/Notifications";
 
-// ==================== Auto Update System ====================
-const fs = require("fs");
-const path = require("path");
-
 const PLUGIN_VERSION = "1.0.0";
 const UPDATE_CHECK_URL = "https://raw.githubusercontent.com/BlockTol/Quest-Auto-Complete/refs/heads/main/version.json";
-const PLUGIN_URL       = "https://raw.githubusercontent.com/BlockTol/Quest-Auto-Complete/refs/heads/main/index.tsx";
-const CHECK_INTERVAL = 6 * 60 * 60 * 1000;
-
-const pluginPath = path.join(Vencord.Plugins.folder, "QuestAutoComplete.plugin.js");
-
-async function checkForUpdates() {
-    try {
-        const res = await fetch(VERSION_URL);
-        const data = await res.json();
-
-        if (!data.version) return;
-
-        if (data.version !== PLUGIN_VERSION) {
-            console.log("[QuestAutoComplete] New update found:", data.version);
-
-            const newCodeReq = await fetch(PLUGIN_URL);
-            const newCode = await newCodeReq.text();
-
-            fs.writeFileSync(pluginPath, newCode, "utf8");
-
-            Vencord.Api.Notifications.sendToast({
-                title: "QuestAutoComplete",
-                content: `Updated to version ${data.version}. Please restart Discord.`,
-                type: "success"
-            });
-        }
-    } catch (err) {
-        console.error("[QuestAutoComplete] Update error", err);
-    }
-}
-
-setInterval(checkForUpdates, CHECK_INTERVAL);
-
-checkForUpdates();
 
 // ==================== Types ====================
 interface Quest {
@@ -1044,9 +1003,6 @@ export default definePlugin({
                 checkAndStartQuest();
                 setupNavigationWatcher();
 
-                if (shouldCheckForUpdates()) {
-                    setTimeout(() => checkForUpdates(false), 5000);
-                }
             } else {
                 notify("QuestAutoComplete", "Failed to initialize. Try restarting Discord.", "error");
             }
