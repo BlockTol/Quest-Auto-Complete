@@ -11,7 +11,7 @@
  * GitHub: https://github.com/BlockTol
  * Discord: @dhrtjhjtd
  * Description: Automatically completes Discord quests instantly!
- * Version: 1.0.0
+ * Version: 1.0.2
  * Credits:
  * - Original script concept from the Discord community
  * - Enhanced and converted to Vencord plugin by BlockTol
@@ -27,9 +27,8 @@ import { Devs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
 import { findByPropsLazy } from "@webpack";
 import { FluxDispatcher, Toasts } from "@webpack/common";
-import { showNotification } from "@api/Notifications";
 
-const PLUGIN_VERSION = "1.0.0";
+const PLUGIN_VERSION = "1.0.2";
 const UPDATE_CHECK_URL = "https://raw.githubusercontent.com/BlockTol/Quest-Auto-Complete/refs/heads/main/version.json";
 
 // ==================== Types ====================
@@ -125,130 +124,6 @@ const settings = definePluginSettings({
         description: "Ignored update version (hidden)",
         default: "",
         hidden: true
-    },
-    checkUpdateBtn: {
-        type: OptionType.COMPONENT,
-        description: "",
-        component: () => (
-            <button
-                onClick={() => {
-                    notify("Checking Updates", "Please wait...", "info");
-                    checkForUpdates(true);
-                }}
-                style={{
-                    padding: "10px 20px",
-                    background: "var(--brand-experiment)",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "4px",
-                    fontSize: "14px",
-                    fontWeight: "500",
-                    cursor: "pointer",
-                    width: "100%",
-                    marginTop: "8px",
-                    transition: "all 0.2s"
-                }}
-                onMouseOver={(e) => (e.currentTarget.style.background = "#4752c4")}
-                onMouseOut={(e) => (e.currentTarget.style.background = "var(--brand-experiment)")}
-            >
-                🔄 Check for Updates Now
-            </button>
-        )
-    },
-    versionInfo: {
-        type: OptionType.COMPONENT,
-        description: "",
-        component: () => (
-            <div style={{
-                padding: "12px",
-                background: "var(--background-secondary)",
-                borderRadius: "4px",
-                marginTop: "8px"
-            }}>
-                <p style={{
-                    margin: 0,
-                    color: "var(--text-muted)",
-                    fontSize: "12px"
-                }}>
-                    Current Version: <strong style={{color: "var(--text-normal)"}}>{PLUGIN_VERSION}</strong>
-                </p>
-            </div>
-        )
-    },
-    showCredits: {
-        type: OptionType.COMPONENT,
-        description: "",
-        component: () => (
-            <div style={{
-                padding: "16px",
-                background: "var(--background-secondary)",
-                borderRadius: "8px",
-                marginTop: "16px"
-            }}>
-                <h3 style={{
-                    color: "var(--header-primary)",
-                    marginBottom: "8px",
-                    fontSize: "16px",
-                    fontWeight: "600"
-                }}>
-                    🎮 QuestAutoComplete v{PLUGIN_VERSION}
-                </h3>
-                <p style={{
-                    color: "var(--text-normal)",
-                    marginBottom: "8px",
-                    fontSize: "14px"
-                }}>
-                    Created by <strong>BlockTol</strong>
-                </p>
-                <p style={{
-                    color: "var(--text-muted)",
-                    fontSize: "12px",
-                    marginBottom: "12px"
-                }}>
-                    Automatically completes Discord quests instantly. Save time and earn rewards effortlessly!
-                </p>
-                <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                    <a
-                        href="https://github.com/BlockTol"
-                        target="_blank"
-                        style={{
-                            padding: "6px 12px",
-                            background: "var(--brand-experiment)",
-                            color: "white",
-                            borderRadius: "4px",
-                            textDecoration: "none",
-                            fontSize: "12px",
-                            fontWeight: "500"
-                        }}
-                    >
-                        GitHub
-                    </a>
-                    <a
-                        href="https://discord.com/users/1172069050424250432"
-                        target="_blank"
-                        style={{
-                            padding: "6px 12px",
-                            background: "#5865F2",
-                            color: "white",
-                            borderRadius: "4px",
-                            textDecoration: "none",
-                            fontSize: "12px",
-                            fontWeight: "500"
-                        }}
-                    >
-                        Discord
-                    </a>
-                </div>
-                <p style={{
-                    color: "var(--text-danger)",
-                    fontSize: "11px",
-                    marginTop: "12px",
-                    fontStyle: "italic"
-                }}>
-                    Use at your own risk. This may violate Discord's Terms of Service.
-                </p>
-            </div>
-        )
     }
 });
 
@@ -329,7 +204,7 @@ function showUpdateNotification(update: UpdateInfo) {
             </svg>
             <div>
                 <h2 style="margin: 0; color: var(--header-primary); font-size: 20px; font-weight: 600;">
-                    ${update.critical ? "⚠️ Critical Update Available" : "🎉 Update Available"}
+                    ${update.critical ? "Critical Update Available" : "🎉 Update Available"}
                 </h2>
                 <p style="margin: 4px 0 0 0; color: var(--text-muted); font-size: 14px;">
                     v${PLUGIN_VERSION} → v${update.version}
@@ -339,7 +214,7 @@ function showUpdateNotification(update: UpdateInfo) {
 
         <div style="background: var(--background-secondary); padding: 16px; border-radius: 4px; margin-bottom: 16px;">
             <h3 style="margin: 0 0 8px 0; color: var(--header-secondary); font-size: 14px; font-weight: 600;">
-                📝 What's New:
+                What's New:
             </h3>
             <ul style="margin: 0; padding-left: 20px; color: var(--text-normal); font-size: 13px;">
                 ${update.changelog.map(item => `<li style="margin: 4px 0;">${item}</li>`).join('')}
@@ -349,7 +224,7 @@ function showUpdateNotification(update: UpdateInfo) {
         ${update.critical ? `
             <div style="background: #faa61a20; border: 1px solid #faa61a; padding: 12px; border-radius: 4px; margin-bottom: 16px;">
                 <p style="margin: 0; color: #faa61a; font-size: 13px; font-weight: 500;">
-                    ⚠️ This is a critical update with important bug fixes or security improvements.
+                    This is a critical update with important bug fixes or security improvements.
                 </p>
             </div>
         ` : ''}
@@ -379,7 +254,7 @@ function showUpdateNotification(update: UpdateInfo) {
                 cursor: pointer;
                 transition: all 0.2s;
             ">
-                📥 Download Update
+                Download Update
             </button>
         </div>
     `;
@@ -387,7 +262,6 @@ function showUpdateNotification(update: UpdateInfo) {
     modal.appendChild(content);
     document.body.appendChild(modal);
 
-    // Add animation styles
     if (!document.getElementById("update-modal-styles")) {
         const style = document.createElement("style");
         style.id = "update-modal-styles";
@@ -416,7 +290,7 @@ function showUpdateNotification(update: UpdateInfo) {
     updateBtn.onclick = () => {
         window.open(update.downloadUrl, "_blank");
         modal.remove();
-        notify("Update", "Opening download page...", "info");
+        notify("Opening download page...");
     };
 
     ignoreBtn.onclick = () => {
@@ -455,7 +329,7 @@ async function checkForUpdates(showNotification = true): Promise<UpdateInfo | nu
                 return updateInfo;
             }
         } else if (showNotification) {
-            notify("No Updates", "You're using the latest version!", "success");
+            notify("You're using the latest version!");
         }
 
         settings.store.lastUpdateCheck = Date.now().toString();
@@ -467,18 +341,11 @@ async function checkForUpdates(showNotification = true): Promise<UpdateInfo | nu
     return null;
 }
 
-function shouldCheckForUpdates(): boolean {
-    if (!settings.store.checkUpdates) return false;
-
-    const lastCheck = parseInt(settings.store.lastUpdateCheck || "0");
-    const now = Date.now();
-
-    return (now - lastCheck) >= UPDATE_INTERVAL;
-}
-
 // ==================== Progress Bar ====================
 function createProgressBar() {
-    if (progressBar) return progressBar;
+    if (progressBar) {
+        progressBar.remove();
+    }
 
     progressBar = document.createElement("div");
     progressBar.style.cssText = `
@@ -490,58 +357,190 @@ function createProgressBar() {
         background: linear-gradient(90deg, #5865F2, #7289DA, #5865F2);
         background-size: 200% 100%;
         z-index: 9999;
-        transition: width 0.3s ease;
+        transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         box-shadow: 0 0 15px rgba(88, 101, 242, 0.6);
         animation: shimmer 2s infinite;
     `;
 
-    const style = document.createElement("style");
-    style.textContent = `
-        @keyframes shimmer {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-    `;
-    document.head.appendChild(style);
+    if (!document.getElementById("progress-bar-styles")) {
+        const style = document.createElement("style");
+        style.id = "progress-bar-styles";
+        style.textContent = `
+            @keyframes shimmer {
+                0% { background-position: 0% 50%; }
+                50% { background-position: 100% 50%; }
+                100% { background-position: 0% 50%; }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
     document.body.appendChild(progressBar);
+    
+    // Force reflow to ensure animation works
+    void progressBar.offsetWidth;
+    
     return progressBar;
 }
 
 function updateProgressBar(percent: number) {
-    if (!progressBar) return;
-    progressBar.style.width = `${Math.min(100, Math.max(0, percent))}%`;
-    if (percent >= 100) {
-        setTimeout(() => {
-            progressBar?.remove();
-            progressBar = null;
-        }, 800);
+    if (!settings.store.showProgressBar) return;
+    
+    if (!progressBar) {
+        createProgressBar();
+    }
+    
+    if (progressBar) {
+        const clampedPercent = Math.min(100, Math.max(0, percent));
+        progressBar.style.width = `${clampedPercent}%`;
+        
+        if (clampedPercent >= 100) {
+            setTimeout(() => {
+                if (progressBar) {
+                    progressBar.style.transition = "opacity 0.5s ease";
+                    progressBar.style.opacity = "0";
+                    setTimeout(() => {
+                        progressBar?.remove();
+                        progressBar = null;
+                    }, 500);
+                }
+            }, 300);
+        }
     }
 }
 
 function removeProgressBar() {
     if (progressBar) {
-        progressBar.remove();
-        progressBar = null;
+        progressBar.style.transition = "opacity 0.3s ease";
+        progressBar.style.opacity = "0";
+        setTimeout(() => {
+            progressBar?.remove();
+            progressBar = null;
+        }, 300);
     }
 }
 
-// ==================== Notifications ====================
-function notify(title: string, body: string, type: "success" | "info" | "error" = "info") {
-    if (settings.store.showNotifications) {
-        const icon = type === "success" ? "✅" : type === "error" ? "❌" : "🎮";
-        showNotification({
-            title,
-            body,
-            icon
-        });
+// ==================== Quest Page Button ====================
+function addQuestPageButton() {
+    if (questPageButton) {
+        questPageButton.remove();
+        questPageButton = null;
     }
 
-    Toasts.show({
-        message: `${title}: ${body}`,
-        type: type === "error" ? Toasts.Type.FAILURE : Toasts.Type.SUCCESS,
-        id: "quest-autocomplete-" + Date.now()
+    const waitForQuestPage = () => {
+        const toolbar = document.querySelector('[class*="toolbar"]');
+
+        if (!toolbar || !location.href.includes('/quests')) return false;
+
+        try {
+            questPageButton = document.createElement("div");
+            questPageButton.className = "iconWrapper_aebc74 clickable_aebc74";
+            questPageButton.setAttribute("role", "button");
+            questPageButton.setAttribute("aria-label", "Quest Settings");
+            questPageButton.setAttribute("tabindex", "0");
+
+            questPageButton.innerHTML = `
+                <svg aria-hidden="true" role="img" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path fill="currentColor" fill-rule="evenodd" d="M10.56 1.1c-.46.05-.73.86-.55 1.3l.27.87c.2.67.04 1.39-.41 1.82-.39.39-.9.58-1.4.52-.32-.04-.56-.2-.63-.5l-.32-.88c-.18-.45-.77-.64-1.14-.37-1.3.94-2.33 2.18-2.99 3.6-.13.28-.11.67.07.96l.52.8c.39.6.33 1.41-.15 1.95-.39.44-.96.63-1.48.52-.27-.06-.47-.26-.52-.52l-.32-.88c-.2-.47-.84-.58-1.22-.23-.9 1.23-1.48 2.69-1.65 4.25-.03.3.12.63.41.82l.87.56c.58.38.87 1.1.75 1.78-.1.54-.47.97-.96 1.14-.26.09-.51.08-.7-.03l-.86-.49c-.45-.24-.98.07-1.05.57-.1 1.6.15 3.2.75 4.67.12.3.45.5.79.5h.98c.67 0 1.28.46 1.5 1.08.17.48.11 1-.19 1.39-.15.2-.38.32-.66.32h-.98c-.47 0-.85.46-.77.93.46 1.56 1.24 2.97 2.25 4.16.2.24.6.31.9.15l.86-.47c.59-.32 1.33-.18 1.82.33.39.41.54.99.41 1.5-.07.27-.25.47-.51.54l-.88.27c-.45.14-.67.69-.43 1.08 1 1.26 2.27 2.31 3.73 3.03.3.15.68.09.92-.16l.69-.7c.47-.48 1.18-.63 1.8-.39.49.19.85.61.97 1.11.06.27.03.52-.11.7l-.48.86c-.25.44.02.98.53 1.08 1.6.31 3.26.3 4.86-.03.3-.06.56-.3.65-.6l.3-.92c.21-.66.82-1.14 1.48-1.17.52-.03 1.02.2 1.35.6.17.2.25.45.23.7l-.03.98c-.02.47.39.86.86.82 1.57-.13 3.08-.6 4.46-1.34.29-.16.45-.5.4-.83l-.17-.97c-.15-.66.1-1.36.62-1.73.42-.3.95-.38 1.42-.23.25.08.44.25.54.49l.44.89c.22.45.81.61 1.18.31 1.25-.99 2.27-2.25 2.97-3.67.15-.3.08-.67-.16-.92l-.7-.72c-.46-.48-.59-1.2-.32-1.8.21-.49.65-.84 1.16-.94.26-.05.52 0 .7.15l.87.57c.44.28.99-.02 1.1-.52.35-1.58.35-3.23 0-4.82-.07-.3-.33-.54-.64-.6l-.93-.2c-.66-.14-1.18-.7-1.27-1.36-.07-.52.1-1.04.47-1.4.2-.2.45-.3.72-.31l.98-.03c.47-.02.84-.44.78-.9-.18-1.57-.69-3.07-1.47-4.42-.16-.28-.5-.43-.82-.37l-.96.2c-.65.15-1.34-.12-1.7-.66-.3-.43-.35-.98-.18-1.44.09-.25.27-.43.52-.52l.9-.35c.45-.18.63-.77.35-1.14-1.01-1.24-2.29-2.24-3.75-2.9-.3-.14-.67-.05-.92.22l-.7.76c-.46.5-1.17.68-1.8.44-.49-.18-.86-.6-1-1.1-.06-.25-.04-.51.09-.7l.47-.87c.25-.45-.02-.99-.52-1.1-1.6-.33-3.26-.34-4.87-.05-.3.06-.55.3-.64.6l-.3.92c-.22.65-.83 1.13-1.49 1.16-.52.02-1.02-.21-1.35-.61-.17-.21-.25-.46-.22-.71l.03-.98c.02-.47-.4-.86-.87-.81-1.57.15-3.08.64-4.45 1.4-.29.17-.44.51-.38.84l.17.97c.15.66-.11 1.35-.63 1.72-.42.3-.95.37-1.42.21-.25-.08-.44-.25-.54-.5l-.44-.88c-.22-.45-.81-.6-1.18-.3-1.24 1-2.25 2.26-2.94 3.68Z" clip-rule="evenodd"></path>
+                    <path fill="currentColor" d="M18.91 11.35c-.19-.52-.76-.79-1.26-.6a3 3 0 1 1-1.77-1.76c.52-.2.79-.77.6-1.26v-.01a1 1 0 0 0-1.35-.44l-.06.03a5 5 0 1 0 2.93 2.94l.03-.06c.2-.52-.02-1.1-.54-1.29l.42.45Z"></path>
+                </svg>
+            `;
+
+            questPageButton.style.cssText = `
+                color: var(--interactive-normal);
+                cursor: pointer;
+            `;
+
+            questPageButton.onmouseover = () => {
+                if (questPageButton) questPageButton.style.color = "var(--interactive-hover)";
+            };
+
+            questPageButton.onmouseout = () => {
+                if (questPageButton) questPageButton.style.color = "var(--interactive-normal)";
+            };
+
+            questPageButton.onclick = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const settingsEvent = new KeyboardEvent("keydown", {
+                    key: ",",
+                    code: "Comma",
+                    keyCode: 188,
+                    which: 188,
+                    ctrlKey: true,
+                    bubbles: true,
+                    cancelable: true
+                });
+                document.dispatchEvent(settingsEvent);
+
+                setTimeout(() => {
+                    const searchBox = document.querySelector('input[placeholder*="Search"], input[type="text"]') as HTMLInputElement;
+                    if (searchBox) {
+                        searchBox.focus();
+                        searchBox.value = "QuestAutoComplete";
+                        searchBox.dispatchEvent(new Event("input", { bubbles: true }));
+                        searchBox.dispatchEvent(new Event("change", { bubbles: true }));
+                    }
+                }, 500);
+            };
+
+            toolbar.appendChild(questPageButton);
+            console.log("[QuestAutoComplete] Button added successfully");
+            return true;
+
+        } catch (error) {
+            console.error("[QuestAutoComplete] Failed to add button:", error);
+            return false;
+        }
+    };
+
+    let attempts = 0;
+    const maxAttempts = 30;
+    const intervalId = setInterval(() => {
+        attempts++;
+        if (waitForQuestPage() || attempts >= maxAttempts) {
+            clearInterval(intervalId);
+        }
+    }, 500);
+}
+
+function setupNavigationWatcher() {
+    if (navigationObserver) {
+        navigationObserver.disconnect();
+    }
+
+    const checkUrl = () => {
+        const currentUrl = location.href;
+        if (currentUrl !== lastQuestUrl) {
+            lastQuestUrl = currentUrl;
+            if (currentUrl.includes('/quests')) {
+                setTimeout(() => addQuestPageButton(), 500);
+            } else if (questPageButton) {
+                questPageButton.remove();
+                questPageButton = null;
+            }
+        }
+    };
+
+    navigationObserver = new MutationObserver(checkUrl);
+    navigationObserver.observe(document.body, {
+        childList: true,
+        subtree: true
     });
+
+    checkUrl();
+}
+
+// ==================== Notifications ====================
+function notify(body: string) {
+    if (settings.store.showNotifications) {
+        Toasts.show({
+            message: body,
+            type: Toasts.Type.SUCCESS,
+            id: "quest-autocomplete-" + Date.now()
+        });
+    }
 }
 
 // ==================== Quest Completion Functions ====================
@@ -559,10 +558,9 @@ async function completeVideoQuest(quest: Quest) {
     const enrolledAt = new Date(quest.userStatus.enrolledAt).getTime();
     let completed = false;
 
-    notify("Quest Started", `Auto-completing: ${quest.config.messages.questName}`, "info");
-
     if (settings.store.showProgressBar) {
         createProgressBar();
+        updateProgressBar(0);
     }
 
     while (true) {
@@ -583,7 +581,6 @@ async function completeVideoQuest(quest: Quest) {
                 updateProgressBar(progress);
             } catch (error) {
                 console.error("[QuestAutoComplete] Progress error:", error);
-                notify("Quest Error", "Failed to update progress", "error");
                 removeProgressBar();
                 return false;
             }
@@ -601,7 +598,7 @@ async function completeVideoQuest(quest: Quest) {
     }
 
     updateProgressBar(100);
-    notify("Quest Completed!", quest.config.messages.questName, "success");
+    notify(`Quest completed: ${quest.config.messages.questName}`);
     isProcessing = false;
     currentQuestId = null;
     return true;
@@ -615,10 +612,9 @@ async function completePlayQuest(quest: Quest) {
     const applicationName = quest.config.application.name;
     const pid = Math.floor(Math.random() * 30000) + 1000;
 
-    notify("Quest Started", `Spoofing game: ${applicationName}`, "info");
-
     if (settings.store.showProgressBar) {
         createProgressBar();
+        updateProgressBar(0);
     }
 
     try {
@@ -672,7 +668,7 @@ async function completePlayQuest(quest: Quest) {
                 });
                 FluxDispatcher.unsubscribe("QUESTS_SEND_HEARTBEAT_SUCCESS", handleProgress);
 
-                notify("Quest Completed!", quest.config.messages.questName, "success");
+                notify(`Quest completed: ${quest.config.messages.questName}`);
                 isProcessing = false;
                 currentQuestId = null;
             }
@@ -688,7 +684,6 @@ async function completePlayQuest(quest: Quest) {
         return true;
     } catch (error) {
         console.error("[QuestAutoComplete] Play quest error:", error);
-        notify("Quest Error", "Failed to spoof game", "error");
         removeProgressBar();
         isProcessing = false;
         return false;
@@ -703,10 +698,9 @@ async function completeStreamQuest(quest: Quest) {
     const applicationName = quest.config.application.name;
     const pid = Math.floor(Math.random() * 30000) + 1000;
 
-    notify("Quest Started", `Spoofing stream: ${applicationName}`, "info");
-
     if (settings.store.showProgressBar) {
         createProgressBar();
+        updateProgressBar(0);
     }
 
     const realFunc = ApplicationStreamingStore.getStreamerActiveStreamMetadata;
@@ -728,7 +722,7 @@ async function completeStreamQuest(quest: Quest) {
             ApplicationStreamingStore.getStreamerActiveStreamMetadata = realFunc;
             FluxDispatcher.unsubscribe("QUESTS_SEND_HEARTBEAT_SUCCESS", handleProgress);
 
-            notify("Quest Completed!", quest.config.messages.questName, "success");
+            notify(`Quest completed: ${quest.config.messages.questName}`);
             isProcessing = false;
             currentQuestId = null;
         }
@@ -747,17 +741,15 @@ async function completeActivityQuest(quest: Quest) {
     const taskConfig = quest.config.taskConfig ?? quest.config.taskConfigV2;
     const secondsNeeded = taskConfig.tasks.PLAY_ACTIVITY.target;
 
-    notify("Quest Started", `Completing: ${quest.config.messages.questName}`, "info");
-
     if (settings.store.showProgressBar) {
         createProgressBar();
+        updateProgressBar(0);
     }
 
     const channelId = ChannelStore.getSortedPrivateChannels()[0]?.id ??
         Object.values(GuildChannelStore.getAllGuilds()).find((x: any) => x?.VOCAL?.length > 0)?.VOCAL[0]?.channel?.id;
 
     if (!channelId) {
-        notify("Quest Error", "No voice channel found", "error");
         removeProgressBar();
         isProcessing = false;
         return false;
@@ -787,13 +779,12 @@ async function completeActivityQuest(quest: Quest) {
         }
 
         updateProgressBar(100);
-        notify("Quest Completed!", quest.config.messages.questName, "success");
+        notify(`Quest completed: ${quest.config.messages.questName}`);
         isProcessing = false;
         currentQuestId = null;
         return true;
     } catch (error) {
         console.error("[QuestAutoComplete] Activity quest error:", error);
-        notify("Quest Error", "Failed to complete activity", "error");
         removeProgressBar();
         isProcessing = false;
         return false;
@@ -803,10 +794,7 @@ async function completeActivityQuest(quest: Quest) {
 // ==================== Main Quest Handler ====================
 async function checkAndStartQuest() {
     if (isProcessing || !settings.store.autoStart) return;
-    if (!QuestsStore) {
-        console.log("[QuestAutoComplete] Stores not initialized yet");
-        return;
-    }
+    if (!QuestsStore) return;
 
     try {
         const quests = [...QuestsStore.quests.values()];
@@ -848,7 +836,6 @@ async function checkAndStartQuest() {
                 if (isDesktopApp) {
                     await completePlayQuest(activeQuest);
                 } else {
-                    notify("Desktop Required", "This quest requires Discord desktop app", "error");
                     isProcessing = false;
                     currentQuestId = null;
                 }
@@ -857,7 +844,6 @@ async function checkAndStartQuest() {
                 if (isDesktopApp) {
                     await completeStreamQuest(activeQuest);
                 } else {
-                    notify("Desktop Required", "This quest requires Discord desktop app", "error");
                     isProcessing = false;
                     currentQuestId = null;
                 }
@@ -868,7 +854,6 @@ async function checkAndStartQuest() {
         }
     } catch (error) {
         console.error("[QuestAutoComplete] Error:", error);
-        notify("Quest Error", "An unexpected error occurred", "error");
         isProcessing = false;
         currentQuestId = null;
         removeProgressBar();
@@ -900,16 +885,12 @@ export default definePlugin({
     },
 
     start() {
-        console.log("[QuestAutoComplete] Plugin started by BlockTol");
+        console.log("[QuestAutoComplete] Plugin started");
 
         setTimeout(() => {
             if (initializeStores()) {
-                notify("QuestAutoComplete", "Plugin activated! Quests will auto-complete.", "success");
                 checkAndStartQuest();
                 setupNavigationWatcher();
-
-            } else {
-                notify("QuestAutoComplete", "Failed to initialize. Try restarting Discord.", "error");
             }
         }, 2000);
     },
@@ -931,7 +912,5 @@ export default definePlugin({
             navigationObserver.disconnect();
             navigationObserver = null;
         }
-
-        notify("QuestAutoComplete", "Plugin deactivated", "info");
     }
 });
