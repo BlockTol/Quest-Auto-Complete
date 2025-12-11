@@ -11,7 +11,7 @@
  * GitHub: https://github.com/BlockTol
  * Discord: @dhrtjhjtd
  * Description: Automatically completes Discord quests instantly!
- * Version: 1.0.2
+ * Version: 1.0.1
  * Credits:
  * - Original script concept from the Discord community
  * - Enhanced and converted to Vencord plugin by BlockTol
@@ -28,7 +28,7 @@ import definePlugin, { OptionType } from "@utils/types";
 import { findByPropsLazy } from "@webpack";
 import { FluxDispatcher, Toasts } from "@webpack/common";
 
-const PLUGIN_VERSION = "1.0.2";
+const PLUGIN_VERSION = "1.0.1";
 const UPDATE_CHECK_URL = "https://raw.githubusercontent.com/BlockTol/Quest-Auto-Complete/refs/heads/main/version.json";
 
 // ==================== Types ====================
