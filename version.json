@@ -1,4 +1,8 @@
 {
-  "version": "1.0.1",
-  "download_url": "https://raw.githubusercontent.com/BlockTol/Quest-Auto-Complete/refs/heads/main/index.tsx"
+  "version": "1.0.2",
+  "download_url": "https://raw.githubusercontent.com/BlockTol/Quest-Auto-Complete/refs/heads/main/index.tsx",
+  "extra_files": [
+      "https://raw.githubusercontent.com/BlockTol/Quest-Auto-Complete/refs/heads/main/README.md",
+      "https://raw.githubusercontent.com/BlockTol/Quest-Auto-Complete/refs/heads/main/version.json"
+  ]
 }
