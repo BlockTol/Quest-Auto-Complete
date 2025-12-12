@@ -26,9 +26,10 @@ You can configure the plugin from the Vencord settings menu or use the Quest Set
 - Adjust completion speed for video quests
 
 
-![Screenshot 1](images/Screenshot 2025-12-12 152217.png)
-![Screenshot 2](images/Screenshot 2025-12-12 152304.png)
-![Screenshot 3](images/Screenshot 2025-12-12 152323.png)
+![Screenshot 1](images/Screenshot%202025-12-12%20152217.png)
+![Screenshot 2](images/Screenshot%202025-12-12%20152304.png)
+![Screenshot 3](images/Screenshot%202025-12-12%20152323.png)
+
 
 
 
