@@ -27,7 +27,9 @@ You can configure the plugin from the Vencord settings menu or use the Quest Set
 
 
 <img width="405" height="314" alt="Screenshot 2025-12-12 152217" src="https://github.com/user-attachments/assets/27ebc11d-d4cd-49d9-8b2b-22ae9f938bf3" />
+<br>
 <img width="401" height="313" alt="Screenshot 2025-12-12 152304" src="https://github.com/user-attachments/assets/32fac638-c05f-41fa-a8c3-0436a5eaab5f" />
+<br>
 <img width="600" height="820" alt="Screenshot 2025-12-12 152323" src="https://github.com/user-attachments/assets/964e11a9-32f1-4e17-a901-0f9d3bcf14ba" />
 
 
@@ -42,4 +44,4 @@ Using this plugin could violate Discord's Terms of Service and may result in acc
 Created by BlockTool
 
 
-![GitHub stars](https://img.shields.io/github/stars/BlockTol/Quest-Auto-Complete?style=for-the-badge)
+[![Star History Chart](https://api.star-history.com/svg?repos=BlockTol/Ques-tAuto-Complete&type=Date)](https://star-history.com/#BlockTol/Quest-Auto-Complete&Date)
