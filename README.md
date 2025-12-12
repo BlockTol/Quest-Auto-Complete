@@ -31,4 +31,4 @@ Using this plugin could violate Discord's Terms of Service and may result in acc
 
 ## Credits
 
-Created by BlockTol
+Created by BlockTool
