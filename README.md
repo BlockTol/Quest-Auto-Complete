@@ -40,3 +40,6 @@ Using this plugin could violate Discord's Terms of Service and may result in acc
 ## Credits
 
 Created by BlockTool
+
+
+![GitHub stars](https://img.shields.io/github/stars/BlockTol/Quest-Auto-Complete?style=for-the-badge)
