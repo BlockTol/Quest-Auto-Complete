@@ -44,5 +44,4 @@ Using this plugin could violate Discord's Terms of Service and may result in acc
 
 ## Credits
 
-Created by BlockTool
--[Discord Server](https://discord.gg/9ra6MwHTHy)
+Created by BlockTool - [Discord Server](https://discord.gg/9ra6MwHTHy)
