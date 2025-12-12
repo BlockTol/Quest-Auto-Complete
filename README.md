@@ -39,9 +39,10 @@ You can configure the plugin from the Vencord settings menu or use the Quest Set
 
 Using this plugin could violate Discord's Terms of Service and may result in account suspension. Use at your own risk.
 
+
+[![Star History Chart](https://api.star-history.com/svg?repos=BlockTol/Ques-tAuto-Complete&type=Date)](https://star-history.com/#BlockTol/Quest-Auto-Complete&Date)
+
+
 ## Credits
 
 Created by BlockTool
-
-
-[![Star History Chart](https://api.star-history.com/svg?repos=BlockTol/Ques-tAuto-Complete&type=Date)](https://star-history.com/#BlockTol/Quest-Auto-Complete&Date)
