@@ -4,6 +4,7 @@ A Vencord plugin that automatically completes Discord quests for you!
 
 ![Version](https://img.shields.io/badge/version-1.0.0-5865F2?style=for-the-badge)
 ![License](https://img.shields.io/badge/license-GPL--3.0-43b581?style=for-the-badge)
+![Visitors](https://visitor-badge.laobi.io/badge?page_id=BlockTol.Quest-Auto-Complete)
 [![Discord](https://img.shields.io/badge/Discord-Join_Server-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/9ra6MwHTHy)
 
 ---
@@ -38,17 +39,7 @@ A Vencord plugin that automatically completes Discord quests for you!
 
 ## Important Notes
 
-<div align="center">
-  <img src="https://github.com/user-attachments/assets/0b308d9c-d88b-4574-bdcc-4c672cb7fb7a" width="200" alt="Warning Icon">
-  
-  <br>
-  
-  **Risk Warning**
-  <br>
-  Using this plugin could violate Discord's Terms of Service and may result in account suspension. 
-  <br>
-  **Use at your own risk.**
-</div>
+**Risk Warning:** Using this plugin could violate Discord's Terms of Service and may result in account suspension. Use at your own risk.
 
 ---
 
