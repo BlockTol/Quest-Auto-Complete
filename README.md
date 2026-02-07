@@ -1,28 +1,60 @@
 # Quest-Auto-Complete
 
+A Vencord plugin that automatically completes Discord quests for you!
 
-Vencord plugin that automatically completes Discord quests for you !
+![Version](https://img.shields.io/badge/version-1.0.0-5865F2?style=for-the-badge)
+![License](https://img.shields.io/badge/license-GPL--3.0-43b581?style=for-the-badge)
+[![Discord](https://img.shields.io/badge/Discord-Join_Server-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/9ra6MwHTHy)
 
+---
 
-## What it does
+## Features
 
-This plugin handles Discord quests automatically when you accept them. It works with video quests, game quests, streaming quests, and activity quests. Just accept a quest and the plugin takes care of the rest.
+| Feature | Description |
+|---------|-------------|
+| **Auto Completion** | Automatically handles quests instantly when you accept them |
+| **Video Quests** | Works seamlessly with video-watching requirements |
+| **Gaming Quests** | Supports standard game activity quests |
+| **Stream & Activity** | Handles streaming and voice channel activity quests |
 
+---
+
+### Included
+- Video quests
+- Game quests
+- Streaming quests
+- Activity quests
+- Auto-accept functionality
+
+---
+
+## Preview
 
 ![Screenshot 1](images/Screenshot%202025-12-12%20152217.png)
 ![Screenshot 2](images/Screenshot%202025-12-12%20152304.png)
 ![Screenshot 3](images/Screenshot%202025-12-12%20152323.png)
 
+---
 
-## Warning
+## Important Notes
 
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/0b308d9c-d88b-4574-bdcc-4c672cb7fb7a" width="200" alt="Warning Icon">
+  
+  <br>
+  
+  **Risk Warning**
+  <br>
+  Using this plugin could violate Discord's Terms of Service and may result in account suspension. 
+  <br>
+  **Use at your own risk.**
+</div>
 
-Using this plugin could violate Discord's Terms of Service and may result in account suspension. Use at your own risk.
+---
 
+## Author
 
-<img width="362" height="321" alt="image" src="https://github.com/user-attachments/assets/0b308d9c-d88b-4574-bdcc-4c672cb7fb7a" />
+- Created by **BlockTool**
+- [Discord Server](https://discord.gg/9ra6MwHTHy)
 
-
-## Credits
-
-Created by BlockTool - [Discord Server](https://discord.gg/9ra6MwHTHy)
+---
