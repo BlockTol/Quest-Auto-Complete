@@ -20,6 +20,9 @@ This plugin handles Discord quests automatically when you accept them. It works 
 Using this plugin could violate Discord's Terms of Service and may result in account suspension. Use at your own risk.
 
 
+<img width="362" height="321" alt="image" src="https://github.com/user-attachments/assets/0b308d9c-d88b-4574-bdcc-4c672cb7fb7a" />
+
+
 ## Credits
 
 Created by BlockTool - [Discord Server](https://discord.gg/9ra6MwHTHy)
