@@ -37,9 +37,16 @@ A Vencord plugin that automatically completes Discord quests for you!
 
 ---
 
-## Important Notes
+## ⚠️ Important Warning (Quest Activity Notice)
 
-**Risk Warning:** Using this plugin could violate Discord's Terms of Service and may result in account suspension. Use at your own risk.
+Discord has updated its detection for **Inauthentic Engagement**. Using scripts or tools to fake Quest completion is a violation of their policies.
+
+**Important points:**
+* Discord may detect the use of this plugin as "unusual activity".
+* If detected, Discord may **limit your access to Quests**.
+* Use of this plugin is at your own risk; the developer is not responsible for any Quest access restrictions on your account.
+
+![Screenshot 4](images/serhawe4hawe4h.png)
 
 ---
 
