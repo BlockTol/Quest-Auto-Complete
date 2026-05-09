@@ -1,0 +1,251 @@
+.vc-questAutoComplete-settings-root {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+}
+
+/* Version Display */
+.vc-questAutoComplete-settings-version-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    background: var(--background-secondary);
+    border-radius: 8px;
+}
+
+.vc-questAutoComplete-settings-version-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.vc-questAutoComplete-settings-version-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--header-primary);
+}
+
+.vc-questAutoComplete-settings-version-subtitle {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.vc-questAutoComplete-settings-version-number {
+    color: #5865f2;
+    font-weight: 600;
+}
+
+.vc-questAutoComplete-settings-version-status {
+    margin-left: 10px;
+}
+
+.vc-questAutoComplete-settings-check-update-btn {
+    padding: 8px 16px;
+    border-radius: 4px;
+    border: none;
+    background: #5865f2;
+    color: white;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.vc-questAutoComplete-settings-check-update-btn:hover {
+    background: #4752c4;
+}
+
+.vc-questAutoComplete-settings-check-update-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Settings Items */
+.vc-questAutoComplete-settings-setting-item {
+    margin-bottom: 16px;
+}
+
+.vc-questAutoComplete-settings-setting-item h5 {
+    margin: 0 0 8px 0;
+}
+
+/* Color Preview */
+.vc-questAutoComplete-settings-color-preview {
+    width: 100%;
+    height: 8px;
+    border-radius: 4px;
+    margin-top: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Update Modal */
+.vc-questAutoComplete-update-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 10000;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.vc-questAutoComplete-update-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--background-primary);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0;
+    z-index: 10001;
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4);
+    min-width: 420px;
+    max-width: 480px;
+    overflow: hidden;
+    animation: slideUp 0.3s ease-out;
+}
+
+.vc-questAutoComplete-update-header {
+    padding: 24px 24px 16px;
+}
+
+.vc-questAutoComplete-update-badge {
+    color: #43b581;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+}
+
+.vc-questAutoComplete-update-title {
+    color: var(--header-primary);
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.vc-questAutoComplete-update-version {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.vc-questAutoComplete-version-old {
+    color: var(--text-muted);
+    font-size: 12px;
+}
+
+.vc-questAutoComplete-version-arrow {
+    color: var(--text-muted);
+}
+
+.vc-questAutoComplete-version-new {
+    background: #43b581;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.vc-questAutoComplete-update-notes {
+    background: var(--background-secondary);
+    margin: 0 24px 16px;
+    padding: 16px;
+    border-radius: 12px;
+    max-height: 180px;
+    overflow-y: auto;
+}
+
+.vc-questAutoComplete-update-notes-title {
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+}
+
+.vc-questAutoComplete-update-notes-content {
+    color: var(--text-normal);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.vc-questAutoComplete-update-notes-content code {
+    background: rgba(88, 101, 242, 0.2);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: monospace;
+    color: #7289da;
+}
+
+.vc-questAutoComplete-update-actions {
+    display: flex;
+    gap: 10px;
+    padding: 16px 24px;
+    background: var(--background-secondary);
+}
+
+.vc-questAutoComplete-update-btn-later {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-normal);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.vc-questAutoComplete-update-btn-later:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.vc-questAutoComplete-update-btn-download {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background: #43b581;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.vc-questAutoComplete-update-btn-download:hover {
+    opacity: 0.9;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -45%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}

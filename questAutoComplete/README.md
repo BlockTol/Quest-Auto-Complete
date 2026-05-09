@@ -2,7 +2,7 @@
 
 A powerful Vencord plugin that automates Discord Quests effortlessly. Automatically spoof games, watch videos, or stream to earn rewards with a sleek, real-time tracking UI.
 
-![Version](https://img.shields.io/badge/version-2.1.0-5865F2?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-2.0.0-5865F2?style=for-the-badge)
 [![Discord](https://img.shields.io/badge/Discord-Join_Server-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/9ra6MwHTHy)
 
 ---
