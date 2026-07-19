@@ -5,8 +5,7 @@ import { ALL_TASK_TYPES } from "../core/types";
 import { startQuest } from "../quests/manager";
 let questButtonsObserver: MutationObserver | null = null;
 let isInjecting = false;
-const failedQuestIds = new Set<string>();
-export function QuestButton({ questId }: { questId: string }) {
+export function QuestButton({ questId }: { questId: string; }) {
     const [isRunning, setIsRunning] = React.useState(false);
     React.useEffect(() => {
         const userId = UserStore.getCurrentUser()?.id;
@@ -28,14 +27,13 @@ export function QuestButton({ questId }: { questId: string }) {
     }, isRunning ? "Cancel Automation" : "Auto Complete");
 }
 function safeGetQuest(questId: string): any {
-    if (failedQuestIds.has(questId)) return null;
     if (!QuestsStore) return null;
     const origLog = console.log;
     const origWarn = console.warn;
     const origError = console.error;
-    console.log = () => {};
-    console.warn = () => {};
-    console.error = () => {};
+    console.log = () => { };
+    console.warn = () => { };
+    console.error = () => { };
     let quest: any = null;
     try {
         quest = QuestsStore.getQuest(questId);
@@ -44,9 +42,6 @@ function safeGetQuest(questId: string): any {
         console.log = origLog;
         console.warn = origWarn;
         console.error = origError;
-    }
-    if (!quest) {
-        failedQuestIds.add(questId);
     }
     return quest;
 }
@@ -183,7 +178,6 @@ function injectQuestButtons() {
     }
 }
 function refreshQuestButtons() {
-    failedQuestIds.clear();
     document.querySelectorAll("[data-quest-autocomplete-btn]").forEach(el => el.remove());
     if (!isPluginStopping) {
         injectQuestButtons();
@@ -242,7 +236,6 @@ export function cleanupQuestButtonObserver() {
             questButtonsObserver = null;
         } catch (error) { }
     }
-    failedQuestIds.clear();
     try {
         document.querySelectorAll("[data-quest-autocomplete-btn]").forEach(btn => {
             try { btn.remove(); } catch (error) { }

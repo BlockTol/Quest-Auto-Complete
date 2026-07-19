@@ -18,7 +18,7 @@ import { cleanupAllPills } from "./ui/notifications";
 import { notify } from "./ui/notifications";
 import { setupQuestButtonObserver, cleanupQuestButtonObserver } from "./ui/questButtons";
 import { cancelQuest, checkAndResumeQuests } from "./quests/manager";
-export const PLUGIN_VERSION = "2.0.0";
+export const PLUGIN_VERSION = "2.1.0";
 export const GITHUB_REPO = "BlockTol/Quest-Auto-Complete";
 export const UPDATE_CHECK_URL = `https://api.github.com/repos/${GITHUB_REPO}/releases/latest`;
 export const GITHUB_RELEASE_URL = `https://github.com/${GITHUB_REPO}/releases/latest`;
