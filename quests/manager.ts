@@ -4,6 +4,7 @@ import { settings } from "../index";
 import {
     activeQuests,
     cleanupFunctions,
+    debugLog,
     getProgressBarKey,
     isPluginStopping,
     parseProgressBarKey,
@@ -75,7 +76,7 @@ function getRunningQuestIds(): string[] {
     }
     return ids;
 }
-function canRunInParallel(newTaskType: string): { canRun: boolean; conflictQuestId: string | null } {
+function canRunInParallel(newTaskType: string): { canRun: boolean; conflictQuestId: string | null; } {
     if (isVideoTask(newTaskType)) {
         return { canRun: true, conflictQuestId: null };
     }
@@ -114,22 +115,22 @@ export async function checkAndResumeQuests() {
     try {
         const saved: SavedQuestState[] = (await DataStore.get(SAVED_STATE_KEY)) || [];
         if (saved.length === 0) return;
-        console.log(`[QuestAutoComplete] Found ${saved.length} saved quest(s), attempting resume...`);
+        debugLog(`[QuestAutoComplete] Found ${saved.length} saved quest(s), attempting resume...`);
         for (const entry of saved) {
             const quest = QuestsStore?.getQuest(entry.questId);
             if (!quest) {
-                console.log(`[QuestAutoComplete] Quest ${entry.questId} no longer available, removing saved state`);
+                debugLog(`[QuestAutoComplete] Quest ${entry.questId} no longer available, removing saved state`);
                 await removeSavedQuestState(entry.questId);
                 continue;
             }
             if (quest.userStatus?.completedAt) {
-                console.log(`[QuestAutoComplete] Quest ${entry.questId} already completed, removing saved state`);
+                debugLog(`[QuestAutoComplete] Quest ${entry.questId} already completed, removing saved state`);
                 await removeSavedQuestState(entry.questId);
                 continue;
             }
             const expiresAt = quest.config?.expiresAt ?? quest.expiresAt;
             if (expiresAt && new Date(expiresAt).getTime() <= Date.now()) {
-                console.log(`[QuestAutoComplete] Quest ${entry.questId} expired, removing saved state`);
+                debugLog(`[QuestAutoComplete] Quest ${entry.questId} expired, removing saved state`);
                 await removeSavedQuestState(entry.questId);
                 continue;
             }
@@ -163,8 +164,8 @@ export async function startQuest(questId: string) {
     try {
         const origLog = console.log;
         const origWarn = console.warn;
-        console.log = () => {};
-        console.warn = () => {};
+        console.log = () => { };
+        console.warn = () => { };
         let quest: any;
         try {
             quest = QuestsStore.getQuest(questId);
@@ -185,8 +186,8 @@ export async function startQuest(questId: string) {
                 notify("Enrolling...", "Accepting quest automatically...", "info");
                 await discordApiPost(`/quests/${questId}/enroll`, { location: 2 });
                 await new Promise(r => setTimeout(r, 1500));
-                console.log = () => {};
-                console.warn = () => {};
+                console.log = () => { };
+                console.warn = () => { };
                 try {
                     quest = QuestsStore.getQuest(questId);
                 } finally {
@@ -233,7 +234,7 @@ export async function startQuest(questId: string) {
                         if (taskName) {
                             quest = apiQuest;
                         } else if (apiTaskConfig?.tasks) {
-                            console.log("[QuestAutoComplete] Unknown task type! Tasks object keys:", Object.keys(apiTaskConfig.tasks));
+                            debugLog("[QuestAutoComplete] Unknown task type! Tasks object keys:", Object.keys(apiTaskConfig.tasks));
                         }
                     }
                 }
@@ -242,13 +243,13 @@ export async function startQuest(questId: string) {
             }
         }
         if (!taskName) {
-            console.log("[QuestAutoComplete] Quest object keys:", Object.keys(quest));
-            console.log("[QuestAutoComplete] quest.config keys:", quest.config ? Object.keys(quest.config) : "none");
+            debugLog("[QuestAutoComplete] Quest object keys:", Object.keys(quest));
+            debugLog("[QuestAutoComplete] quest.config keys:", quest.config ? Object.keys(quest.config) : "none");
             const taskCfg = quest.config?.taskConfigV2 ?? quest.config?.taskConfig ?? quest.taskConfigV2 ?? quest.taskConfig;
             if (taskCfg && taskCfg.tasks) {
-                console.log("[QuestAutoComplete] EXACT TASKS FOUND:", Object.keys(taskCfg.tasks));
+                debugLog("[QuestAutoComplete] EXACT TASKS FOUND:", Object.keys(taskCfg.tasks));
             } else {
-                console.log("[QuestAutoComplete] No tasks object found in config!", taskCfg);
+                debugLog("[QuestAutoComplete] No tasks object found in config!", taskCfg);
             }
             notify("Unknown Quest Type", "Could not determine quest type. Try accepting the quest manually first.", "error");
             return;
@@ -258,6 +259,49 @@ export async function startQuest(questId: string) {
             quest.config?.taskConfigV2 ??
             quest.taskConfig ??
             quest.taskConfigV2;
+
+        const localAppId =
+            quest.config?.application?.id ??
+            quest.config?.applicationId ??
+            quest.config?.application_id ??
+            quest.application?.id ??
+            quest.applicationId ??
+            quest.application_id ??
+            null;
+
+        if (!localAppId && (taskName === "PLAY_ON_DESKTOP" || taskName === "STREAM_ON_DESKTOP")) {
+            try {
+                debugLog(`[QuestAutoComplete] applicationId missing from local quest, fetching from API...`);
+                const apiResp = await discordApiGet(`/quests/${questId}`);
+                const apiQuest = apiResp?.body ?? apiResp;
+                const apiAppId =
+                    apiQuest?.config?.application?.id ??
+                    apiQuest?.config?.applicationId ??
+                    apiQuest?.config?.application_id ??
+                    apiQuest?.application?.id ??
+                    apiQuest?.applicationId ??
+                    apiQuest?.application_id ??
+                    null;
+                if (apiAppId) {
+                    debugLog(`[QuestAutoComplete] Resolved applicationId from API: ${apiAppId}`);
+                    if (!quest.config) quest.config = {} as any;
+                    if (!quest.config.application) quest.config.application = {} as any;
+                    quest.config.application.id = apiAppId;
+                    quest.config.application.name =
+                        apiQuest?.config?.application?.name ??
+                        apiQuest?.config?.applicationName ??
+                        apiQuest?.application?.name ??
+                        quest.config.application.name;
+                } else {
+                    console.warn(`[QuestAutoComplete] API also missing applicationId. Quest will likely fail.`);
+                    console.warn(`[QuestAutoComplete] API quest keys:`, Object.keys(apiQuest ?? {}));
+                    console.warn(`[QuestAutoComplete] API quest.config:`, JSON.stringify(apiQuest?.config ?? {}, null, 2));
+                }
+            } catch (e) {
+                console.warn(`[QuestAutoComplete] Failed to fetch applicationId from API:`, e);
+            }
+        }
+
         const { canRun, conflictQuestId } = canRunInParallel(taskName);
         if (!canRun && conflictQuestId) {
             const shouldSwitch = await showQuestConflictModal(conflictQuestId, questId);

@@ -20,3 +20,10 @@ export function parseProgressBarKey(key: string): { questId: string; userId: str
     if (parts.length !== 2) return null;
     return { questId: parts[0], userId: parts[1] };
 }
+let _settingsStore: any = null;
+export function initDebug(settingsStore: any) {
+    _settingsStore = settingsStore;
+}
+export function debugLog(...args: any[]) {
+    if (_settingsStore?.debugMode) console.log(...args);
+}

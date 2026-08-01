@@ -31,6 +31,7 @@ function closePillElement(el: HTMLElement, delay = 900) {
 }
 
 export function createQuestPill(questId: string, title: string): void {
+    if (!settings.store.showProgressBar) return;
     removeQuestPill(questId);
 
     const container = getPillContainer();
@@ -77,7 +78,7 @@ export function createQuestPill(questId: string, title: string): void {
 }
 
 export function updateQuestPill(questId: string, body?: string, percent?: number): void {
-    const row = questPills.get(questId);
+    const row = questPills.get(questId) || document.getElementById(`quest-row-${questId}`) as HTMLElement;
     if (!row) return;
     const pill = row.querySelector(".quest-pill");
     if (!pill || pill.classList.contains("completed")) return;
@@ -88,7 +89,8 @@ export function updateQuestPill(questId: string, body?: string, percent?: number
     }
 
     if (percent !== undefined) {
-        const safePercent = Math.min(100, Math.max(0, Math.round(percent)));
+        const floored = Math.floor(percent);
+        const safePercent = percent >= 100 ? 100 : Math.min(99, Math.max(0, floored));
         const percentEl = pill.querySelector(".quest-pill-percent");
         if (percentEl) percentEl.textContent = `${safePercent}%`;
 
@@ -98,7 +100,7 @@ export function updateQuestPill(questId: string, body?: string, percent?: number
 }
 
 export function completeQuestPill(questId: string, message: string, success: boolean): void {
-    const row = questPills.get(questId);
+    const row = questPills.get(questId) || document.getElementById(`quest-row-${questId}`) as HTMLElement;
     if (!row) return;
     const pill = row.querySelector(".quest-pill");
     if (!pill) return;
@@ -118,15 +120,16 @@ export function completeQuestPill(questId: string, message: string, success: boo
     const slides = row.querySelectorAll(".quest-pill-slide");
     slides.forEach(s => s.remove());
 
-    const delay = success ? 5000 : 6000;
+    const baseDuration = (settings.store.notificationDuration ?? 4) * 1000;
+    const delay = baseDuration;
     setTimeout(() => {
-        const currentRow = questPills.get(questId);
+        const currentRow = questPills.get(questId) || document.getElementById(`quest-row-${questId}`) as HTMLElement;
         if (!currentRow) return;
         const currentPill = currentRow.querySelector(".quest-pill");
         if (currentPill) {
             closePillElement(currentPill as HTMLElement);
             setTimeout(() => {
-                currentRow.remove();
+                try { currentRow.remove(); } catch (e) {}
                 questPills.delete(questId);
             }, 900);
         }
@@ -134,10 +137,14 @@ export function completeQuestPill(questId: string, message: string, success: boo
 }
 
 export function removeQuestPill(questId: string): void {
-    const row = questPills.get(questId);
-    if (row) {
-        row.remove();
+    const mapRow = questPills.get(questId);
+    if (mapRow) {
+        try { mapRow.remove(); } catch (e) {}
         questPills.delete(questId);
+    }
+    const domRow = document.getElementById(`quest-row-${questId}`);
+    if (domRow) {
+        try { domRow.remove(); } catch (e) {}
     }
 }
 
@@ -165,7 +172,8 @@ function showPillSlideMessage(questId: string, message: string, type: "success" 
 
     row.appendChild(slide);
 
-    const duration = type === "error" ? 5000 : 3000;
+    const baseDuration = (settings.store.notificationDuration ?? 4) * 1000;
+    const duration = baseDuration;
     setTimeout(() => {
         if (slide.parentElement) {
             closePillElement(slide, 400);
@@ -183,7 +191,8 @@ function showSubPill(title: string, body: string, type: "success" | "info" | "er
     }
 
     const icons: Record<string, string> = { success: "✓", error: "✕", info: "⚡", cancel: "✕" };
-    const duration = type === "error" ? 6000 : 3000;
+    const baseDuration = (settings.store.notificationDuration ?? 4) * 1000;
+    const duration = baseDuration;
 
     const pill = document.createElement("div");
     pill.className = `quest-sub-pill ${type}`;

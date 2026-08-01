@@ -1,6 +1,6 @@
 import { discordApiPost, rateLimitedPost } from "../core/api";
 import { settings } from "../index";
-import { activeQuests, getProgressBarKey, isPluginStopping } from "../core/state";
+import { activeQuests, debugLog, getProgressBarKey, isPluginStopping } from "../core/state";
 import { QuestsStore } from "../core/stores";
 import { Quest } from "../core/types";
 import { notify, completeQuestPill, updateQuestPill } from "../ui/notifications";
@@ -81,7 +81,7 @@ export async function completeVideoQuest(quest: Quest, userId: string): Promise<
                     secondsDone = Math.min(secondsNeeded, timestamp);
                     const percent = Math.min(100, (secondsDone / secondsNeeded) * 100);
                     updateProgressBar(quest.id, userId, percent);
-                    console.log(`[QuestAutoComplete] Video progress: ${secondsDone}/${secondsNeeded}`);
+                    debugLog(`[QuestAutoComplete] Video progress: ${secondsDone}/${secondsNeeded}`);
                 } catch (e) {
                     console.warn("[QuestAutoComplete] Video progress error:", e);
                 }

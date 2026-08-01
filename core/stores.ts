@@ -1,4 +1,5 @@
 import { findByPropsLazy, findStoreLazy } from "@webpack";
+import { debugLog } from "./state";
 export let QuestsStore: any = null;
 export const RunningGameStore = findStoreLazy("RunningGameStore");
 export const ApplicationStreamingStore = findStoreLazy("ApplicationStreamingStore");
@@ -77,7 +78,7 @@ export function initializeStores(): boolean {
         }
         const questsOk = !!QuestsStore;
         const apiOk = !!api;
-        console.log("[QuestAutoComplete] Store status:", {
+        debugLog("[QuestAutoComplete] Store status:", {
             QuestsStore: questsOk,
             RunningGameStore: !!RunningGameStore,
             ApplicationStreamingStore: !!ApplicationStreamingStore,
@@ -88,16 +89,16 @@ export function initializeStores(): boolean {
         if (questsOk) {
             try {
                 const storeName = QuestsStore.getName?.();
-                console.log("[QuestAutoComplete] QuestsStore name:", storeName);
+                debugLog("[QuestAutoComplete] QuestsStore name:", storeName);
                 if (typeof QuestsStore.getQuests === "function") {
                     const quests = QuestsStore.getQuests();
                     const count = Array.isArray(quests) ? quests.length : Object.keys(quests || {}).length;
-                    console.log("[QuestAutoComplete] Quests available:", count);
+                    debugLog("[QuestAutoComplete] Quests available:", count);
                     const questList = Array.isArray(quests) ? quests : Object.values(quests || {});
                     if (questList.length > 0) {
                         const first = questList[0] as any;
-                        console.log("[QuestAutoComplete] First quest keys:", Object.keys(first));
-                        console.log("[QuestAutoComplete] First quest sample:", {
+                        debugLog("[QuestAutoComplete] First quest keys:", Object.keys(first));
+                        debugLog("[QuestAutoComplete] First quest sample:", {
                             id: first.id,
                             hasConfig: !!first.config,
                             hasUserStatus: !!first.userStatus,
@@ -114,7 +115,7 @@ export function initializeStores(): boolean {
             console.error("[QuestAutoComplete] Critical stores missing - plugin cannot function");
             return false;
         }
-        console.log("[QuestAutoComplete] Stores initialized successfully");
+        debugLog("[QuestAutoComplete] Stores initialized successfully");
         return true;
     } catch (error) {
         console.error("[QuestAutoComplete] Failed to initialize stores:", error);

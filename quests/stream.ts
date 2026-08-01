@@ -1,6 +1,6 @@
 import { settings } from "../index";
-import { activeQuests, cleanupFunctions, getProgressBarKey, isPluginStopping } from "../core/state";
-import { findFluxDispatcher } from "../core/stores";
+import { activeQuests, cleanupFunctions, debugLog, getProgressBarKey, isPluginStopping } from "../core/state";
+import { findFluxDispatcher, QuestsStore } from "../core/stores";
 import { Quest } from "../core/types";
 import { notify, completeQuestPill, updateQuestPill } from "../ui/notifications";
 import { createProgressBar, getDiscordProgressPercent, removeProgressBar, updateProgressBar } from "../ui/progressBar";
@@ -12,11 +12,23 @@ export async function completeStreamQuest(quest: Quest, userId: string): Promise
         notify("Error", "Invalid quest configuration", "error", quest.id);
         return false;
     }
-    const applicationId = quest.config?.application?.id ?? quest.application?.id;
-    const applicationName = quest.config?.application?.name ?? quest.application?.name ?? "Unknown App";
+    const applicationId =
+        quest.config?.application?.id ??
+        quest.config?.applicationId ??
+        quest.config?.application_id ??
+        quest.application?.id ??
+        quest.applicationId ??
+        quest.application_id ??
+        null;
+    const resolvedName =
+        quest.config?.application?.name ??
+        quest.config?.applicationName ??
+        quest.application?.name ??
+        quest.applicationName ??
+        "Unknown App";
     const currentProgress = quest.userStatus?.progress?.STREAM_ON_DESKTOP?.value ??
         quest.userStatus?.streamProgressSeconds ?? 0;
-    updateQuestPill(quest.id, `Spoofed stream to ${applicationName}. Stream in VC for ${Math.ceil((secondsNeeded - currentProgress) / 60)} more minutes.`, 0);
+    updateQuestPill(quest.id, `Spoofed stream to ${resolvedName}. Stream in VC for ${Math.ceil((secondsNeeded - currentProgress) / 60)} more minutes.`, 0);
     if (settings.store.showProgressBar) {
         createProgressBar(quest.id, userId);
         setTimeout(() => {
@@ -58,27 +70,86 @@ export async function completeStreamQuest(quest: Quest, userId: string): Promise
                 pid,
                 sourceName: null,
             });
-            console.log(`[QuestAutoComplete] Spoofed stream to ${applicationName}. Stream any window in VC for ${Math.ceil((secondsNeeded - currentProgress) / 60)} more minutes.`);
-            console.log("[QuestAutoComplete] Remember that you need at least 1 other person to be in the VC!");
+            debugLog(`[QuestAutoComplete] Spoofed stream to ${resolvedName}. Stream any window in VC for ${Math.ceil((secondsNeeded - currentProgress) / 60)} more minutes.`);
+            debugLog("[QuestAutoComplete] Remember that you need at least 1 other person to be in the VC!");
+
+            let lastServerProgress = currentProgress;
+            const startTime = Date.now();
+
+            const updateTicker = setInterval(() => {
+                try {
+                    const questData = activeQuests.get(key);
+                    if (!questData || !questData.isProcessing || isPluginStopping) {
+                        clearInterval(updateTicker);
+                        return;
+                    }
+
+                    const liveQuest = QuestsStore?.getQuest?.(quest.id);
+                    const liveProgress = Math.floor(
+                        liveQuest?.userStatus?.progress?.STREAM_ON_DESKTOP?.value ??
+                        liveQuest?.userStatus?.streamProgressSeconds ??
+                        lastServerProgress
+                    );
+
+                    if (liveProgress > lastServerProgress) {
+                        lastServerProgress = liveProgress;
+                    }
+
+                    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                    const estimatedProgress = Math.min(secondsNeeded, Math.max(lastServerProgress, currentProgress + elapsed));
+
+                    const percent = liveProgress >= secondsNeeded
+                        ? 100
+                        : Math.min(99, Math.floor((estimatedProgress / secondsNeeded) * 100));
+
+                    updateProgressBar(quest.id, userId, percent);
+
+                    if (liveProgress >= secondsNeeded) {
+                        clearInterval(updateTicker);
+                        debugLog("[QuestAutoComplete] Stream quest completed!");
+                        AppStreamingStoreLocal.getStreamerActiveStreamMetadata = realFunc;
+                        FluxDispatcherLocal.unsubscribe("QUESTS_SEND_HEARTBEAT_SUCCESS", heartbeatHandler);
+                        const questName = quest.config?.messages?.questName ?? quest.messages?.questName ?? "Stream Quest";
+                        completeQuestPill(quest.id, `${questName} Completed!`, true);
+                        cleanupQuest(quest.id, userId);
+                        resolve(true);
+                    }
+                } catch (e) { }
+            }, 1000);
+
             const heartbeatHandler = (data: any) => {
                 try {
                     const questData = activeQuests.get(key);
                     if (!questData || !questData.isProcessing || isPluginStopping) {
+                        clearInterval(updateTicker);
                         AppStreamingStoreLocal.getStreamerActiveStreamMetadata = realFunc;
                         FluxDispatcherLocal.unsubscribe("QUESTS_SEND_HEARTBEAT_SUCCESS", heartbeatHandler);
                         removeProgressBar(quest.id, userId);
                         resolve(false);
                         return;
                     }
-                    const configVersion = quest.config?.configVersion ?? quest.configVersion;
-                    const progress = configVersion === 1
-                        ? data.userStatus.streamProgressSeconds
-                        : Math.floor(data.userStatus.progress.STREAM_ON_DESKTOP.value);
-                    const percent = Math.min(100, (progress / secondsNeeded) * 100);
+
+                    const liveQuest = QuestsStore?.getQuest?.(quest.id);
+                    const progress = Math.floor(
+                        liveQuest?.userStatus?.progress?.STREAM_ON_DESKTOP?.value ??
+                        liveQuest?.userStatus?.streamProgressSeconds ??
+                        data?.userStatus?.progress?.STREAM_ON_DESKTOP?.value ??
+                        data?.progress?.STREAM_ON_DESKTOP?.value ??
+                        data?.userStatus?.streamProgressSeconds ??
+                        lastServerProgress
+                    );
+
+                    if (progress > lastServerProgress) {
+                        lastServerProgress = progress;
+                    }
+
+                    const percent = progress >= secondsNeeded ? 100 : Math.min(99, Math.floor((progress / secondsNeeded) * 100));
                     updateProgressBar(quest.id, userId, percent);
-                    console.log(`[QuestAutoComplete] Quest progress: ${progress}/${secondsNeeded}`);
+                    debugLog(`[QuestAutoComplete] Stream progress: ${progress}/${secondsNeeded} (${percent}%)`);
+
                     if (progress >= secondsNeeded) {
-                        console.log("[QuestAutoComplete] Quest completed!");
+                        clearInterval(updateTicker);
+                        debugLog("[QuestAutoComplete] Quest completed!");
                         AppStreamingStoreLocal.getStreamerActiveStreamMetadata = realFunc;
                         FluxDispatcherLocal.unsubscribe("QUESTS_SEND_HEARTBEAT_SUCCESS", heartbeatHandler);
                         const questName = quest.config?.messages?.questName ?? quest.messages?.questName ?? "Stream Quest";
@@ -94,6 +165,7 @@ export async function completeStreamQuest(quest: Quest, userId: string): Promise
             const cleanups = cleanupFunctions.get(key) || [];
             cleanups.push(() => {
                 try {
+                    clearInterval(updateTicker);
                     AppStreamingStoreLocal.getStreamerActiveStreamMetadata = realFunc;
                     FluxDispatcherLocal.unsubscribe("QUESTS_SEND_HEARTBEAT_SUCCESS", heartbeatHandler);
                 } catch (e) { }

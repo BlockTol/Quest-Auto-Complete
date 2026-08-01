@@ -1,10 +1,12 @@
 import { Button, React, UserStore } from "@webpack/common";
-import { activeQuests, getProgressBarKey, isPluginStopping, refreshQuestButtonsRef, setRefreshQuestButtonsRef } from "../core/state";
+import { activeQuests, debugLog, getProgressBarKey, isPluginStopping, refreshQuestButtonsRef, setRefreshQuestButtonsRef } from "../core/state";
 import { QuestsStore } from "../core/stores";
 import { ALL_TASK_TYPES } from "../core/types";
 import { startQuest } from "../quests/manager";
+import { settings } from "../index";
 let questButtonsObserver: MutationObserver | null = null;
 let isInjecting = false;
+let questVideoObserver: MutationObserver | null = null;
 export function QuestButton({ questId }: { questId: string; }) {
     const [isRunning, setIsRunning] = React.useState(false);
     React.useEffect(() => {
@@ -188,6 +190,7 @@ export function setupQuestButtonObserver() {
         questButtonsObserver.disconnect();
     }
     setRefreshQuestButtonsRef(refreshQuestButtons);
+    setupQuestVideoAutoDismiss();
     try {
         let debounceTimeout: number | null = null;
         questButtonsObserver = new MutationObserver(mutations => {
@@ -236,9 +239,81 @@ export function cleanupQuestButtonObserver() {
             questButtonsObserver = null;
         } catch (error) { }
     }
+    if (questVideoObserver) {
+        try {
+            questVideoObserver.disconnect();
+            questVideoObserver = null;
+        } catch (error) { }
+    }
     try {
         document.querySelectorAll("[data-quest-autocomplete-btn]").forEach(btn => {
             try { btn.remove(); } catch (error) { }
         });
     } catch (error) { }
+}
+
+function setupQuestVideoAutoDismiss() {
+    if (questVideoObserver) {
+        questVideoObserver.disconnect();
+    }
+    questVideoObserver = new MutationObserver(() => {
+        if (isPluginStopping) return;
+        tryDismissQuestVideo();
+    });
+    questVideoObserver.observe(document.body, { childList: true, subtree: true });
+}
+
+function tryDismissQuestVideo() {
+    try {
+        if (!settings.store.autoDismissQuestPopups) return;
+        const candidates = document.querySelectorAll(
+            "[class*='layerContainer'] [class*='layer'], [class*='modal'], [class*='backdrop'], [role='dialog']"
+        );
+
+        for (const layer of Array.from(candidates)) {
+            const text = (layer as HTMLElement).textContent ?? "";
+
+            const video = layer.querySelector("video");
+            if (video) {
+                const src = video.src || video.currentSrc || "";
+                const isQuestVideo = src.includes("cdn.discordapp.com/quests") ||
+                    layer.querySelector("[class*='questContent'], [class*='quest']") !== null;
+                if (isQuestVideo) {
+                    const closeBtn = findCloseButton(layer);
+                    if (closeBtn) {
+                        debugLog("[QuestAutoComplete] Auto-dismissing quest video popup");
+                        closeBtn.click();
+                        return;
+                    }
+                }
+            }
+
+            if (
+                text.includes("Continue on your phone") ||
+                text.includes("Scan this QR code") ||
+                text.includes("continue the Quest on your mobile")
+            ) {
+                const closeBtn = findCloseButton(layer);
+                if (closeBtn) {
+                    debugLog("[QuestAutoComplete] Auto-dismissing mobile QR code popup");
+                    closeBtn.click();
+                    return;
+                }
+            }
+        }
+    } catch (e) { }
+}
+
+function findCloseButton(container: Element): HTMLElement | null {
+    return (
+        container.querySelector("[aria-label='Close']") as HTMLElement ||
+        container.querySelector("[class*='closeButton']") as HTMLElement ||
+        (Array.from(container.querySelectorAll("button")).find(b =>
+            b.getAttribute("aria-label")?.toLowerCase().includes("close") ||
+            b.textContent?.trim() === "\u2715" ||
+            b.textContent?.trim() === "\u00d7" ||
+            b.textContent?.trim() === "\u2573"
+        ) as HTMLElement | undefined) ||
+        null
+    );
 }

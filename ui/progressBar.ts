@@ -36,8 +36,9 @@ export function getDiscordProgressPercent(questId: string): number | null {
         const offset = parseFloat(dashOffset);
         if (isNaN(circumference) || isNaN(offset)) return null;
         const progressLength = circumference - Math.abs(offset);
-        const percent = (progressLength / circumference) * 100;
-        return Math.max(0, Math.min(100, percent));
+        const rawPercent = (progressLength / circumference) * 100;
+        const percent = Math.max(0, Math.min(100, rawPercent));
+        return percent >= 99.9 ? 100 : Math.min(99, Math.floor(percent));
     } catch (error) {
         return null;
     }
@@ -55,6 +56,7 @@ export function createProgressBar(questId: string, userId: string): HTMLElement 
 
 export function updateProgressBar(questId: string, userId: string, percent: number) {
     if (isPluginStopping) return;
+    if (!settings.store.showProgressBar) return;
     const key = getProgressBarKey(questId, userId);
     const clampedPercent = Math.min(100, Math.max(0, percent));
     updateQuestPill(questId, undefined, clampedPercent);
