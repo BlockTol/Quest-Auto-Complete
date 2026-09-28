@@ -14,6 +14,7 @@ A powerful Vencord plugin that automates Discord Quests effortlessly. Automatica
 |---------|-------------|
 | **Game Spoofing** | Automatically spoofs the required game to complete gameplay quests. |
 | **Video & Stream Quests** | Fully supports watching promotional videos and streaming quests. |
+| **Quest Queue** | Queue up as many quests as you want and let the plugin accept and complete them one after another, automatically. |
 | **Live Progress Bar** | Real-time progress bar tracking right at the top of your screen. |
 | **Auto-Resume** | Automatically resumes quest automation even if you reload Discord. |
 | **Auto-Dismiss Popups** | Automatically dismisses promotional video popups and mobile QR code modals. |
@@ -26,6 +27,13 @@ A powerful Vencord plugin that automates Discord Quests effortlessly. Automatica
 3. Open the **Settings** gear icon next to the plugin to customize options.
 4. Navigate to your **Discord Quests** page and accept the quest you Want to complete.
 5. You will see an **"Auto Complete"** button next to supported active quests. Click it, and let the plugin do the rest!
+
+---
+### Quest Queue
+1. Open the **⋯** menu on any quest and choose **Add to queue** (works even if you haven't accepted the quest yet).
+2. Click the new **Queue** button next to *Suggested* and *Filters* to see everything you've queued.
+3. Flip the switch to let the queue run on its own: it accepts, runs and completes your queued quests one at a time, in the background.
+4. Pick **Run first: Videos** or **Games** to choose which kind the queue works through first.
 
 ---
 ## Configuration
