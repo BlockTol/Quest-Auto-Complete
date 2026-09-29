@@ -4,11 +4,12 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { PLUGIN_VERSION } from "@plugins/QuestAutoComplete/core/constants";
-import { DiscordButton } from "@plugins/QuestAutoComplete/ui/DiscordButton";
-import { runUpdateCheck, type UpdateResult } from "@plugins/QuestAutoComplete/ui/updatePrompt";
 import { classNameFactory } from "@utils/css";
 import { React } from "@webpack/common";
+
+import { PLUGIN_VERSION } from "../core/constants";
+import { DiscordButton } from "../ui/DiscordButton";
+import { runUpdateCheck, type UpdateResult } from "../ui/updatePrompt";
 
 const cl = classNameFactory("vc-qac-about-");
 

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import type { Quest } from "@plugins/QuestAutoComplete/core/types";
+import type { Quest } from "../core/types";
 
 export interface QuestApi {
     get(url: string, signal?: AbortSignal): Promise<any>;

@@ -4,15 +4,14 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { accountReady } from "@plugins/QuestAutoComplete/core/account";
-import { acceptQuest } from "@plugins/QuestAutoComplete/core/enroll";
-import { settings } from "@plugins/QuestAutoComplete/core/settings";
-import { sleep } from "@plugins/QuestAutoComplete/core/sleep";
-import { getQuest } from "@plugins/QuestAutoComplete/core/stores";
-import { getQuestName, type Quest } from "@plugins/QuestAutoComplete/core/types";
-import { cancelQuest, isAutoStarted, isRunning, onSessionEnded, startQuest } from "@plugins/QuestAutoComplete/quests/manager";
-import { notify } from "@plugins/QuestAutoComplete/ui/notify";
-
+import { accountReady } from "../core/account";
+import { acceptQuest } from "../core/enroll";
+import { settings } from "../core/settings";
+import { sleep } from "../core/sleep";
+import { getQuest } from "../core/stores";
+import { getQuestName, type Quest } from "../core/types";
+import { cancelQuest, isAutoStarted, isRunning, onSessionEnded, startQuest } from "../quests/manager";
+import { notify } from "../ui/notify";
 import { describeEntry, pickNext, pickToAccept, type QueuePreference, type QueueRow } from "./order";
 import {
     addToQueue,

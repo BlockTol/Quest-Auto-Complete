@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { getApplicationId, getGameName, progressOf } from "@plugins/QuestAutoComplete/core/types";
-
+import { getApplicationId, getGameName, progressOf } from "../core/types";
 import type { QuestDeps } from "./contracts";
 import { waitForServerProgress } from "./progress";
 import type { QuestSession } from "./session";

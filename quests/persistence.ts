@@ -5,9 +5,10 @@
  */
 
 import * as DataStore from "@api/DataStore";
-import { keyFor, loadOwned } from "@plugins/QuestAutoComplete/core/account";
-import { SAVED_QUESTS_KEY } from "@plugins/QuestAutoComplete/core/constants";
-import { logger } from "@plugins/QuestAutoComplete/core/logger";
+
+import { keyFor, loadOwned } from "../core/account";
+import { SAVED_QUESTS_KEY } from "../core/constants";
+import { logger } from "../core/logger";
 
 export interface SavedQuest {
     questId: string;

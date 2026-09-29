@@ -4,9 +4,9 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { getEntries, getVersion, subscribe } from "@plugins/QuestAutoComplete/queue/store";
 import { Popout, React } from "@webpack/common";
 
+import { getEntries, getVersion, subscribe } from "../queue/store";
 import { DiscordButton } from "./DiscordButton";
 import { QueueIcon } from "./icons";
 import { QueuePanel } from "./QueuePanel";

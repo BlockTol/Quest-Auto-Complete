@@ -5,12 +5,12 @@
  */
 
 import * as DataStore from "@api/DataStore";
-import { DISMISSED_VERSION_KEY, PLUGIN_VERSION, SUPPORT_CHANNEL_ID, SUPPORT_INVITE } from "@plugins/QuestAutoComplete/core/constants";
-import { debug } from "@plugins/QuestAutoComplete/core/logger";
-import { fetchLatestRelease, isMandatory, isNewer, type ReleaseInfo, summarizeNotes } from "@plugins/QuestAutoComplete/core/updater";
 import { openInviteModal } from "@utils/discord";
 import { ChannelStore, NavigationRouter } from "@webpack/common";
 
+import { DISMISSED_VERSION_KEY, PLUGIN_VERSION, SUPPORT_CHANNEL_ID, SUPPORT_INVITE } from "../core/constants";
+import { debug } from "../core/logger";
+import { fetchLatestRelease, isMandatory, isNewer, type ReleaseInfo, summarizeNotes } from "../core/updater";
 import { addItem, findItem, type PromptItem, removeItem } from "./store";
 
 const CHECK_INTERVAL_MS = 30 * 60 * 1000;

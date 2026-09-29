@@ -4,15 +4,15 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { settings } from "@plugins/QuestAutoComplete/core/settings";
-import { getGameName, getQuestName, getTarget } from "@plugins/QuestAutoComplete/core/types";
-import { cancelQuest, getSessionPercent, getVersion as getSessionsVersion, subscribe as subscribeSessions } from "@plugins/QuestAutoComplete/quests/manager";
-import { type QueuePreference, type QueueRow, sortRows } from "@plugins/QuestAutoComplete/queue/order";
-import { getPreference, getRows, isQueueEnabled, setQueueEnabled } from "@plugins/QuestAutoComplete/queue/runner";
-import { getVersion as getQueueVersion, isAccepting, removeFromQueue, subscribe as subscribeQueue } from "@plugins/QuestAutoComplete/queue/store";
 import { classNameFactory } from "@utils/css";
 import { Dialog, React, ScrollerThin } from "@webpack/common";
 
+import { settings } from "../core/settings";
+import { getGameName, getQuestName, getTarget } from "../core/types";
+import { cancelQuest, getSessionPercent, getVersion as getSessionsVersion, subscribe as subscribeSessions } from "../quests/manager";
+import { type QueuePreference, type QueueRow, sortRows } from "../queue/order";
+import { getPreference, getRows, isQueueEnabled, setQueueEnabled } from "../queue/runner";
+import { getVersion as getQueueVersion, isAccepting, removeFromQueue, subscribe as subscribeQueue } from "../queue/store";
 import { DiscordButton, DiscordSwitch, DiscordText } from "./DiscordButton";
 import { CloseIcon } from "./icons";
 import { getItems as getOverlayItems, subscribe as subscribeOverlay } from "./store";

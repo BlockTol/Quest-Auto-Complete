@@ -4,10 +4,10 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { canAutomate, type Quest } from "@plugins/QuestAutoComplete/core/types";
-import { getVersion, isRunning, startQuest, subscribe } from "@plugins/QuestAutoComplete/quests/manager";
 import { React } from "@webpack/common";
 
+import { canAutomate, type Quest } from "../core/types";
+import { getVersion, isRunning, startQuest, subscribe } from "../quests/manager";
 import { DiscordButton } from "./DiscordButton";
 
 export function QuestButton({ quest }: { quest: Quest; }) {

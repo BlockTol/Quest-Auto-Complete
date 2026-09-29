@@ -4,11 +4,11 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { accountReady } from "@plugins/QuestAutoComplete/core/account";
-import { logger } from "@plugins/QuestAutoComplete/core/logger";
-import { settings } from "@plugins/QuestAutoComplete/core/settings";
-import { sleep } from "@plugins/QuestAutoComplete/core/sleep";
-import { getQuest } from "@plugins/QuestAutoComplete/core/stores";
+import { accountReady } from "../core/account";
+import { logger } from "../core/logger";
+import { settings } from "../core/settings";
+import { sleep } from "../core/sleep";
+import { getQuest } from "../core/stores";
 import {
     getQuestName,
     getTarget,
@@ -18,10 +18,9 @@ import {
     isVideoTask,
     pickTask,
     type TaskType
-} from "@plugins/QuestAutoComplete/core/types";
-import { notify } from "@plugins/QuestAutoComplete/ui/notify";
-import { confirmSwitch, createSessionUI } from "@plugins/QuestAutoComplete/ui/pills";
-
+} from "../core/types";
+import { notify } from "../ui/notify";
+import { confirmSwitch, createSessionUI } from "../ui/pills";
 import { runActivity } from "./activity";
 import type { QuestDeps } from "./contracts";
 import { deps } from "./deps";

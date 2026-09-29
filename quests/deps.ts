@@ -4,14 +4,14 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { questApi } from "@plugins/QuestAutoComplete/core/api";
-import { debug, logger } from "@plugins/QuestAutoComplete/core/logger";
-import { settings } from "@plugins/QuestAutoComplete/core/settings";
-import { sleep } from "@plugins/QuestAutoComplete/core/sleep";
-import { getQuest } from "@plugins/QuestAutoComplete/core/stores";
 import { findStore } from "@webpack";
 import { ChannelStore, FluxDispatcher, GuildChannelStore, SelectedChannelStore } from "@webpack/common";
 
+import { questApi } from "../core/api";
+import { debug, logger } from "../core/logger";
+import { settings } from "../core/settings";
+import { sleep } from "../core/sleep";
+import { getQuest } from "../core/stores";
 import type { FakeGame, QuestDeps } from "./contracts";
 
 function patchMethod(target: any, key: string, replacement: (...args: any[]) => any): () => void {

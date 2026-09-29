@@ -5,7 +5,7 @@
  */
 
 export const PLUGIN_NAME = "QuestAutoComplete";
-export const PLUGIN_VERSION = "3.0.0";
+export const PLUGIN_VERSION = "3.0.1";
 
 export const GITHUB_REPO = "BlockTol/Quest-Auto-Complete";
 export const UPDATE_CHECK_URL = `https://api.github.com/repos/${GITHUB_REPO}/releases/latest`;

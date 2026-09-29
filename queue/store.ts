@@ -5,11 +5,11 @@
  */
 
 import * as DataStore from "@api/DataStore";
-import { getOwner, keyFor, loadOwned } from "@plugins/QuestAutoComplete/core/account";
-import { QUEUE_ENABLED_KEY, QUEUE_KEY } from "@plugins/QuestAutoComplete/core/constants";
-import { logger } from "@plugins/QuestAutoComplete/core/logger";
-import { settings } from "@plugins/QuestAutoComplete/core/settings";
 
+import { getOwner, keyFor, loadOwned } from "../core/account";
+import { QUEUE_ENABLED_KEY, QUEUE_KEY } from "../core/constants";
+import { logger } from "../core/logger";
+import { settings } from "../core/settings";
 import type { QueueEntry } from "./order";
 
 let entries: readonly QueueEntry[] = [];

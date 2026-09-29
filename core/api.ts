@@ -4,9 +4,9 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import type { QuestApi } from "@plugins/QuestAutoComplete/quests/contracts";
 import { RestAPI } from "@webpack/common";
 
+import type { QuestApi } from "../quests/contracts";
 import { withRateLimitRetry } from "./retry";
 import { sleep } from "./sleep";
 

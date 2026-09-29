@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { progressOf, type QuestUserStatus } from "@plugins/QuestAutoComplete/core/types";
-
+import { progressOf, type QuestUserStatus } from "../core/types";
 import type { QuestDeps } from "./contracts";
 import type { QuestSession } from "./session";
 

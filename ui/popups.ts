@@ -4,9 +4,10 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { debug } from "@plugins/QuestAutoComplete/core/logger";
-import { settings } from "@plugins/QuestAutoComplete/core/settings";
 import { i18n } from "@webpack/common";
+
+import { debug } from "../core/logger";
+import { settings } from "../core/settings";
 
 const QR_QUEST_MESSAGES = ["zlG59w", "bBTjR9"];
 

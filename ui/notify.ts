@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { settings } from "@plugins/QuestAutoComplete/core/settings";
-
+import { settings } from "../core/settings";
 import {
     addItem,
     durationMs,

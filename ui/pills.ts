@@ -4,9 +4,8 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { settings } from "@plugins/QuestAutoComplete/core/settings";
-import type { Outcome, SessionUI } from "@plugins/QuestAutoComplete/quests/session";
-
+import { settings } from "../core/settings";
+import type { Outcome, SessionUI } from "../quests/session";
 import { notify } from "./notify";
 import {
     addItem,

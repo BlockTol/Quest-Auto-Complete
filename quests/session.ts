@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { getQuestName, percentOf, type Quest, type TaskType } from "@plugins/QuestAutoComplete/core/types";
+import { getQuestName, percentOf, type Quest, type TaskType } from "../core/types";
 
 export type Outcome = "completed" | "cancelled" | "failed" | "incomplete";
 

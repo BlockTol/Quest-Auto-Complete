@@ -12,7 +12,7 @@ import {
     pickTask,
     type Quest,
     type TaskType
-} from "@plugins/QuestAutoComplete/core/types";
+} from "../core/types";
 
 export interface QueueEntry {
     questId: string;
