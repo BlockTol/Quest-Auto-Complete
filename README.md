@@ -20,6 +20,11 @@ A powerful Vencord plugin that automates Discord Quests effortlessly. Automatica
 | **Auto-Dismiss Popups** | Automatically dismisses promotional video popups and mobile QR code modals. |
 | **Smart Update Checker** | Notifies you of new plugin updates seamlessly within Discord. |
 
+![1](https://raw.githubusercontent.com/BlockTol/Quest-Auto-Complete/main/images/3.png)
+![2](https://raw.githubusercontent.com/BlockTol/Quest-Auto-Complete/main/images/1.png)
+![3](https://raw.githubusercontent.com/BlockTol/Quest-Auto-Complete/main/images/2.png)
+
+
 ---
 ### How to Use
 1. Go to your **Vencord Settings** -> **Plugins**.
@@ -34,6 +39,10 @@ A powerful Vencord plugin that automates Discord Quests effortlessly. Automatica
 2. Click the new **Queue** button next to *Suggested* and *Filters* to see everything you've queued.
 3. Flip the switch to let the queue run on its own: it accepts, runs and completes your queued quests one at a time, in the background.
 4. Pick **Run first: Videos** or **Games** to choose which kind the queue works through first.
+
+![4](https://raw.githubusercontent.com/BlockTol/Quest-Auto-Complete/main/images/4.png)
+![5](https://raw.githubusercontent.com/BlockTol/Quest-Auto-Complete/main/images/5.png)
+
 
 ---
 ## Configuration
